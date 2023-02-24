@@ -1,0 +1,77 @@
+package run;
+
+import apostl_gen.APOSTLGen;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import run.exceptions.NoSpecificationPathException;
+
+import org.openapi4j.core.exception.EncodeException;
+import org.openapi4j.core.exception.ResolutionException;
+import org.openapi4j.core.validation.ValidationException;
+
+import run.exceptions.CreateDirectoryException;
+import serialization.SpecificationWrapper;
+import specification_parser.SpecificationParser;
+import specification_parser.domain.Specification;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+
+public class Main {
+
+    public static final String DIRECTORY = "apostl-specs";
+
+    public static void main(String[] args) throws EncodeException, NoSpecificationPathException, IOException {
+        // Checking arguments
+        if(args.length < 1)
+            throw new NoSpecificationPathException();
+
+        String filepath = args[0];
+        File specFile = new File(filepath);
+
+        try {
+            // Creating apostl-specs directory if it does not exist
+            createDirectory();
+
+            // Parsing OAS
+            Specification spec = SpecificationParser.parse(specFile);
+
+            // Generating APOSTL specification
+            APOSTLGen.generate(spec);
+
+            // Serialization
+            serialize(new SpecificationWrapper(spec), createJsonFile(specFile.getName()));
+
+        } catch(ValidationException e) {
+            e.printStackTrace();
+            System.err.println("OpenAPI 3 validation failure. Please, provide a specification in version 3.");
+        } catch (ResolutionException | CreateDirectoryException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private static void createDirectory() throws CreateDirectoryException {
+        File directory = new File(DIRECTORY);
+
+        if (!directory.exists())
+            directory.mkdir();
+
+        if (!directory.exists())
+            throw new CreateDirectoryException(DIRECTORY);
+    }
+
+    private static FileWriter createJsonFile(String filename) throws IOException {
+        String apostl_filename = filename.replace(".json", "") + "-apostl-spec.json";
+        return new FileWriter(DIRECTORY + "/" + apostl_filename);
+    }
+
+    private static void serialize(SpecificationWrapper wrapper, FileWriter writer) throws IOException {
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+        gson.toJson(wrapper, writer);
+        writer.flush();
+        writer.close();
+    }
+}
