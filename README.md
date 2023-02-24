@@ -1,9 +1,9 @@
-# APOSTLGen #
+# MAGMACT-Gen #
 
-APOSTLGen automatically generates an APOSTL specification based on an existing OpenAPI Specification document.
+MAGMACT-Gen automatically generates an APOSTL specification based on an existing OpenAPI Specification document.
 The generated specification is an extension of the original OAS JSON file. 
 
-Currently, APOSTLGen is not able to generate invariants. As such, we provide a useful catalog with useful templates for 
+Currently, MAGMACT-Gen is not able to generate invariants. As such, we provide a useful catalog with useful templates for 
 the user to complement the generated specification. 
 
 The generated JSON file can then be used by PETIT - a tool to automate the microservice testing process. 
@@ -198,8 +198,8 @@ capacity.
 
 
 ## Generated File Structure <a name="file-structure"></a>
-The generated file will be a standard `.json` file. You can find a full example of an APOSTLGen output in the 
-`src/main/examples` directory. The file `apostl_spec.json` is the output of executing APOSTLGen with the 
+The generated file will be a standard `.json` file. You can find a full example of an MAGMACT-Gen output in the 
+`src/main/examples` directory. The file `apostl_spec.json` is the output of executing MAGMACT-Gen with the 
 `tournaments.json` specification. This file is a standard OpenAPI Specification. The file `tournaments_extended.json` 
 is a complete specification for the tournament's application, extended with a valid and complete APOSTL specification. 
 
@@ -230,18 +230,18 @@ is a complete specification for the tournament's application, extended with a va
 ```
 
 ## Installation <a name="installation"></a>
-APOSTLGen implementation is within a `.jar` file so there is no installation required. 
+MAGMACT-Gen implementation is within a `.jar` file so there is no installation required. 
 Requires Java 16 or higher installed. 
 
 
 ## Usage  <a name="usage"></a>
-In order to execute the APOSTLGen `.jar` file, you can do the following: 
+In order to execute the MAGMACT-Gen `.jar` file, you can do the following: 
 
-``java -jar APOSTLGen.jar <path_to_oas_json>``
+``java -jar MAGMACT-Gen.jar <path_to_oas_json>``
 
 The generated json specification will be stored in the `.jar` location. 
 
 ---
 ### Support <a name="support"></a>
-For any questions related to APOSTLGen, APOSTL or PETIT please contact 
+For any questions related to MAGMACT-Gen, APOSTL or PETIT please contact 
 [acm.ribeiro@campus.fct.unl.pt](mailto:acm.ribeiro@campus.fct.unl.pt)
