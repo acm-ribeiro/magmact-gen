@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import oas_custom_parser.OASCustomParser;
-import run.exceptions.NoSpecificationPathException;
 
 import org.openapi4j.core.exception.EncodeException;
 import org.openapi4j.core.exception.ResolutionException;
@@ -24,10 +23,12 @@ public class Main {
 
     public static final String DIRECTORY = "apostl-specs";
 
-    public static void main(String[] args) throws EncodeException, NoSpecificationPathException, IOException {
+    public static void main(String[] args) throws EncodeException, IOException {
         // Checking arguments
-        if(args.length < 1)
-            throw new NoSpecificationPathException();
+        if(args.length < 1) {
+            System.err.println("Please, provide the Open API Specification JSON file path.");
+            System.exit(1);
+        }
 
         String filepath = args[0];
         File specFile = new File(filepath);

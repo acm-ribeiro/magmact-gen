@@ -20,6 +20,8 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <finalName>magmact-gen</finalName> <!-- generated jar file name -->
+                    <appendAssemblyId>false</appendAssemblyId> <!-- Removes the jar-with-dependencies suffix -->
                 </configuration>
             </plugin>
         </plugins>
