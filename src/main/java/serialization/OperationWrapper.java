@@ -1,8 +1,8 @@
 package serialization;
 
-import magmact_parser.domain.APIResponse;
-import magmact_parser.domain.Schema;
-import magmact_parser.domain.URLParameter;
+import oas_custom_parser.domain.APIResponse;
+import oas_custom_parser.domain.Schema;
+import oas_custom_parser.domain.URLParameter;
 
 import java.util.ArrayList;
 import java.util.List;

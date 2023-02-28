@@ -144,7 +144,7 @@ relationships to ensure that the overall validity, integrity, and consistency (i
 the database table is maintained. All the constraints present in this section **are meant to be used as invariants** 
 unless stated otherwise. 
 
-#### Domain Constraints <a name="magmact_parser.domain"></a>
+#### Domain Constraints <a name="oas_custom_parser.domain"></a>
 🔷 Can be defined as a valid set of values for an attribute (e.g. integer attributes cannot have string values)
 
 These constraints are already enforced by the specification without the need for APOSTL. For instance, when we’re trying

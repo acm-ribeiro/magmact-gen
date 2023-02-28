@@ -4,7 +4,7 @@ import magmact_gen.APOSTLGen;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import magmact_parser.MagmaCtParser;
+import oas_custom_parser.OASCustomParser;
 import run.exceptions.NoSpecificationPathException;
 
 import org.openapi4j.core.exception.EncodeException;
@@ -13,7 +13,7 @@ import org.openapi4j.core.validation.ValidationException;
 
 import run.exceptions.CreateDirectoryException;
 import serialization.SpecificationWrapper;
-import magmact_parser.domain.Specification;
+import oas_custom_parser.domain.Specification;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -37,7 +37,7 @@ public class Main {
             createDirectory();
 
             // Parsing OAS
-            Specification spec = MagmaCtParser.parse(specFile);
+            Specification spec = OASCustomParser.parse(specFile);
 
             // Generating APOSTL specification
             APOSTLGen.generate(spec);

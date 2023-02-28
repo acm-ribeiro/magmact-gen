@@ -1,4 +1,4 @@
-package magmact_parser.domain;
+package oas_custom_parser.domain;
 
 public class APIProperty {
 

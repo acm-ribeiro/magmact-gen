@@ -1,4 +1,4 @@
-package magmact_parser.exceptions;
+package oas_custom_parser.exceptions;
 
 import java.io.Serial;
 

@@ -3,9 +3,9 @@ package magmact_gen;
 import org.openapi4j.core.exception.EncodeException;
 import org.openapi4j.core.exception.ResolutionException;
 import org.openapi4j.core.validation.ValidationException;
-import magmact_parser.domain.APIOperation;
-import magmact_parser.domain.Schema;
-import magmact_parser.domain.Specification;
+import oas_custom_parser.domain.APIOperation;
+import oas_custom_parser.domain.Schema;
+import oas_custom_parser.domain.Specification;
 import utils.Lemmatizer;
 
 import java.util.List;

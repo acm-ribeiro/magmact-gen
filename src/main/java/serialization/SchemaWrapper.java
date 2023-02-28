@@ -1,6 +1,6 @@
 package serialization;
 
-import magmact_parser.domain.APIProperty;
+import oas_custom_parser.domain.APIProperty;
 
 import java.util.ArrayList;
 import java.util.List;

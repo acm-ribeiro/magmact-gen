@@ -1,7 +1,6 @@
-package magmact_parser;
+package oas_custom_parser;
 
 import java.io.File;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,13 +16,11 @@ import org.openapi4j.parser.model.v3.*;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.openapi4j.parser.model.v3.Link;
-import magmact_parser.domain.*;
-import magmact_parser.domain.Schema;
-import magmact_parser.exceptions.NotJSONContentType;
+import oas_custom_parser.domain.*;
+import oas_custom_parser.domain.Schema;
+import oas_custom_parser.exceptions.NotJSONContentType;
 
-import javax.sound.midi.Soundbank;
-
-public class MagmaCtParser {
+public class OASCustomParser {
 
 	public static final String REGEX = "x-regex";
 	public static final String PATTERN = "pattern";
