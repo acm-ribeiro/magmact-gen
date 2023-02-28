@@ -1,9 +1,10 @@
 package run;
 
-import apostl_gen.APOSTLGen;
+import magmact_gen.APOSTLGen;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import magmact_parser.MagmaCtParser;
 import run.exceptions.NoSpecificationPathException;
 
 import org.openapi4j.core.exception.EncodeException;
@@ -12,8 +13,7 @@ import org.openapi4j.core.validation.ValidationException;
 
 import run.exceptions.CreateDirectoryException;
 import serialization.SpecificationWrapper;
-import specification_parser.SpecificationParser;
-import specification_parser.domain.Specification;
+import magmact_parser.domain.Specification;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -37,7 +37,7 @@ public class Main {
             createDirectory();
 
             // Parsing OAS
-            Specification spec = SpecificationParser.parse(specFile);
+            Specification spec = MagmaCtParser.parse(specFile);
 
             // Generating APOSTL specification
             APOSTLGen.generate(spec);
@@ -64,7 +64,7 @@ public class Main {
     }
 
     private static FileWriter createJsonFile(String filename) throws IOException {
-        String apostl_filename = filename.replace(".json", "") + "-apostl-spec.json";
+        String apostl_filename = filename.replace(".json", "") + "-magmact.json";
         return new FileWriter(DIRECTORY + "/" + apostl_filename);
     }
 
@@ -74,4 +74,5 @@ public class Main {
         writer.flush();
         writer.close();
     }
+
 }

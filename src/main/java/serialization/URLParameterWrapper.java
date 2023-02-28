@@ -1,6 +1,6 @@
 package serialization;
 
-import specification_parser.domain.APIProperty;
+import magmact_parser.domain.APIProperty;
 
 import java.util.List;
 

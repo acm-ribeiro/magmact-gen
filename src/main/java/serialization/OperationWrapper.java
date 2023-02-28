@@ -1,8 +1,8 @@
 package serialization;
 
-import specification_parser.domain.APIResponse;
-import specification_parser.domain.Schema;
-import specification_parser.domain.URLParameter;
+import magmact_parser.domain.APIResponse;
+import magmact_parser.domain.Schema;
+import magmact_parser.domain.URLParameter;
 
 import java.util.ArrayList;
 import java.util.List;

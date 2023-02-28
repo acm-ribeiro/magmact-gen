@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 import com.google.gson.JsonElement;
-import specification_parser.domain.URI;
+import magmact_parser.domain.URI;
 
 
 public class StringUtils {

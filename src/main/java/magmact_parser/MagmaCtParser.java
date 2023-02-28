@@ -1,6 +1,7 @@
-package specification_parser;
+package magmact_parser;
 
 import java.io.File;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +17,13 @@ import org.openapi4j.parser.model.v3.*;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.openapi4j.parser.model.v3.Link;
-import specification_parser.domain.*;
-import specification_parser.domain.Schema;
-import specification_parser.exceptions.NotJSONContentType;
+import magmact_parser.domain.*;
+import magmact_parser.domain.Schema;
+import magmact_parser.exceptions.NotJSONContentType;
 
-public class SpecificationParser {
+import javax.sound.midi.Soundbank;
+
+public class MagmaCtParser {
 
 	public static final String REGEX = "x-regex";
 	public static final String PATTERN = "pattern";
@@ -41,11 +44,37 @@ public class SpecificationParser {
 		// Parses and validates the OpenAPI file
 		OpenApi3 api = new OpenApi3Parser().parse(specFile, true);
 
+		Map<String, Endpoint> endpoints = parseEndpoints(api);
 		Map<String, Schema> schemas = parseSchemas(api);
 		Map<String, APIOperation> operations = parseOperations(api, schemas);
 		List<String> servers = parseServers(api);
 
-		return new Specification(servers, operations, schemas, new ArrayList<>(api.getPaths().keySet()));
+		return new Specification(servers, operations, schemas, new ArrayList<>(api.getPaths().keySet()), endpoints);
+	}
+
+	/**
+	 * Parses the APIs endpoints and returns them organised by operation id.
+	 * @param api API to be parsed
+	 * @return endpoints by operation id
+	 */
+	private static Map<String, Endpoint> parseEndpoints(OpenApi3 api) {
+		Map<String, Endpoint> endpoints = new HashMap<>();
+		Map<String, Path> paths = api.getPaths();
+
+		for (Entry<String, Path> path_entry: paths.entrySet()) {
+			Map<String, Operation> operations = path_entry.getValue().getOperations();
+
+			for (Entry<String, Operation> op_entry: operations.entrySet()) {
+				String opId = op_entry.getValue().getOperationId();
+
+				String uri = path_entry.getKey();
+				List<Parameter> params = path_entry.getValue().getParameters();
+
+				endpoints.put(opId, new Endpoint(uri, params));
+			}
+		}
+
+		return endpoints;
 	}
 
 	private static List<String> parseServers(OpenApi3 api) {

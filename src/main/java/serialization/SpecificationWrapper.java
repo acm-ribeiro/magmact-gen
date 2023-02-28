@@ -1,8 +1,8 @@
 package serialization;
 
-import specification_parser.domain.APIOperation;
-import specification_parser.domain.Schema;
-import specification_parser.domain.Specification;
+import magmact_parser.domain.APIOperation;
+import magmact_parser.domain.Schema;
+import magmact_parser.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.HashMap;

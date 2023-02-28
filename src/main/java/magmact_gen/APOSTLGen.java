@@ -1,16 +1,13 @@
-package apostl_gen;
+package magmact_gen;
 
 import org.openapi4j.core.exception.EncodeException;
 import org.openapi4j.core.exception.ResolutionException;
 import org.openapi4j.core.validation.ValidationException;
-import specification_parser.SpecificationParser;
-import specification_parser.domain.APIOperation;
-import specification_parser.domain.Schema;
-import specification_parser.domain.Specification;
-import specification_parser.exceptions.NotJSONContentType;
+import magmact_parser.domain.APIOperation;
+import magmact_parser.domain.Schema;
+import magmact_parser.domain.Specification;
 import utils.Lemmatizer;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package specification_parser.domain;
+package magmact_parser.domain;
 
 public class APIProperty {
 
