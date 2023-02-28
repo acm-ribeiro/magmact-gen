@@ -1,9 +1,9 @@
 package run;
 
-import magmact_gen.APOSTLGen;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import magmact_gen.MagmaCtGen;
 import oas_custom_parser.OASCustomParser;
 
 import org.openapi4j.core.exception.EncodeException;
@@ -41,7 +41,7 @@ public class Main {
             Specification spec = OASCustomParser.parse(specFile);
 
             // Generating APOSTL specification
-            APOSTLGen.generate(spec);
+            MagmaCtGen.generate(spec);
 
             // Serialization
             serialize(new SpecificationWrapper(spec), createJsonFile(specFile.getName()));

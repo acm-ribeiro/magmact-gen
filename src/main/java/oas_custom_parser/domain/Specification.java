@@ -18,16 +18,14 @@ public class Specification {
 	private List<String> invariants;
 	private Map<String, Schema> schemas;
 	private transient List<String> paths;
-	private transient Map<String, Endpoint> endpoints;
 
 	
-	public Specification(List<String> servers, Map<String, APIOperation> operations, Map<String, Schema> schemas, List<String> paths, Map<String, Endpoint> endpoints) {
+	public Specification(List<String> servers, Map<String, APIOperation> operations, Map<String, Schema> schemas, List<String> paths) {
 		this.servers = servers;
 		this.operationsById = operations;
 		this.invariants = new ArrayList<>();
 		this.schemas = schemas;
 		this.paths = paths;
-		this.endpoints = endpoints;
 
 		initOperationsByTags();
 		invariants.add("T");
@@ -40,10 +38,6 @@ public class Specification {
 
 	public List<String> getServers(){
 		return servers;
-	}
-
-	public Map<String, Endpoint> getEndpoints() {
-		return endpoints;
 	}
 	
 	public Map<String, APIOperation> getOperations() {

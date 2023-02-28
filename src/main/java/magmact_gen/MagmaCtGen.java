@@ -11,7 +11,7 @@ import utils.Lemmatizer;
 import java.util.List;
 import java.util.Map;
 
-public class APOSTLGen {
+public class MagmaCtGen {
 
     public static final String RESPONSE_CODE = "response_code(GET %s)";
     public static final String EQUALS = " == ";

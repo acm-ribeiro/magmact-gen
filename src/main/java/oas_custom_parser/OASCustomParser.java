@@ -40,38 +40,12 @@ public class OASCustomParser {
 	public static Specification parse(File specFile) throws ValidationException, ResolutionException, EncodeException {
 		// Parses and validates the OpenAPI file
 		OpenApi3 api = new OpenApi3Parser().parse(specFile, true);
-
-		Map<String, Endpoint> endpoints = parseEndpoints(api);
+		
 		Map<String, Schema> schemas = parseSchemas(api);
 		Map<String, APIOperation> operations = parseOperations(api, schemas);
 		List<String> servers = parseServers(api);
 
-		return new Specification(servers, operations, schemas, new ArrayList<>(api.getPaths().keySet()), endpoints);
-	}
-
-	/**
-	 * Parses the APIs endpoints and returns them organised by operation id.
-	 * @param api API to be parsed
-	 * @return endpoints by operation id
-	 */
-	private static Map<String, Endpoint> parseEndpoints(OpenApi3 api) {
-		Map<String, Endpoint> endpoints = new HashMap<>();
-		Map<String, Path> paths = api.getPaths();
-
-		for (Entry<String, Path> path_entry: paths.entrySet()) {
-			Map<String, Operation> operations = path_entry.getValue().getOperations();
-
-			for (Entry<String, Operation> op_entry: operations.entrySet()) {
-				String opId = op_entry.getValue().getOperationId();
-
-				String uri = path_entry.getKey();
-				List<Parameter> params = path_entry.getValue().getParameters();
-
-				endpoints.put(opId, new Endpoint(uri, params));
-			}
-		}
-
-		return endpoints;
+		return new Specification(servers, operations, schemas, new ArrayList<>(api.getPaths().keySet()));
 	}
 
 	private static List<String> parseServers(OpenApi3 api) {
