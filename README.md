@@ -247,7 +247,7 @@ Requires Java 16 or higher installed.
 ## Usage  <a name="usage"></a>
 In order to execute the MagmaCt-Gen `.jar` file, you can do the following: 
 
-``java -jar MagmaCt-Gen.jar <path_to_oas_json>``
+``java -jar magmact-gen.jar <path_to_oas_json>``
 
 The generated json specification will be stored in the `.jar` location. 
 
