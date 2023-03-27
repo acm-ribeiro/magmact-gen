@@ -56,20 +56,20 @@ are the following:
       GET      - returns all tournaments 
       POST     - adds a new tournament
    /tournaments/{tournamentId}/
-      GET      - returns the tournament with the given `tournamentId`
-      PUT      - updated the tournament with the given `tournamentId`
-      DELETE   - deletes the tournament with the given `tournamentId`
+      GET      - returns the tournament with the given {tournamentId}
+      PUT      - updated the tournament with the given {tournamentId}
+      DELETE   - deletes the tournament with the given {tournamentId}
    
    /tournaments/{tournamentId}/capacity/
-      GET      - returns the capacity of the tournament with the given `tournamentId`
+      GET      - returns the capacity of the tournament with the given {tournamentId}
    
    /tournaments/{tournamentId}/enrolments/
-      POST     - enrols a player in the tournament with the given `tournamentId`
-      GET      - returns the players enroled in the tournament with the given `tournamentId`
+      POST     - enrols a player in the tournament with the given {tournamentId}
+      GET      - returns the players enroled in the tournament with the given {tournamentId}
  
    /tournaments/{tournamentId}/enrollments/{playerNIF}/
-      GET      - checks if the player with the given `playerNIF` is enroled in the tournament with the given `tournamentId`
-      DELETE   - deletes the enrolment of the player with the given `playerNIF` in the tournament with the given `tournamentId`
+      GET      - checks if the player with the given {playerNIF} is enroled in the tournament with the given {tournamentId}
+      DELETE   - deletes the enrolment of the player with the given {playerNIF} in the tournament with the given {tournamentId}
 ```   
 
 :small_blue_diamond: Players' API:
@@ -79,12 +79,12 @@ are the following:
       POST     - adds a new player
    
    /players/{playerNIF}/
-      GET      - returns the player with the given `playerNIF`
-      PUT      - updates the player with the given `playerNIF`
-      DELETE   - deletes the player with the given `playerNIF`
+      GET      - returns the player with the given {playerNIF}
+      PUT      - updates the player with the given {playerNIF}
+      DELETE   - deletes the player with the given {playerNIF}
    
    /players/{playerNIF}/enrollments/
-      GET      - returns the tournaments in which the player with the given `playerNIF` is enroled
+      GET      - returns the tournaments in which the player with the given {playerNIF} is enroled
 ```
 
 💡 The full OAS of this application can be found in the `scr/main/examples` directory. 
@@ -256,5 +256,5 @@ The generated json specification will be stored in the `.jar` location.
 
 ---
 ### Support <a name="support"></a>
-For any questions related to the Magma framework please contact 
+For any questions related to the Magma framework, please contact 
 [acm.ribeiro@campus.fct.unl.pt](mailto:acm.ribeiro@campus.fct.unl.pt)
