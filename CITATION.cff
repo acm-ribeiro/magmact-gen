@@ -1,10 +1,25 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+title: MagmaCt-Gen
+message: >-
+  If you need to use this software, please cite it using the
+  information on this file. 
+type: software
 authors:
-  - family-names: Ribeiro
-    given-names: Ana 
-    orcid: https://orcid.org/1234-5678-9101-1121
-title: "MagmaCt-Gen"
-version: 1.0.0
-doi: 10.13140/RG.2.2.31110.6560
-date-released: 2023-03-20
+  - given-names: Ana
+    family-names: Ribeiro
+    email: acm.ribeiro@campus.fct.unl.pt
+    orcid: 'https://orcid.org/0009-0000-9237-5958'
+  - given-names: Carla
+    family-names: Ferreira
+    email: carla.ferreira@fct.unl.pt
+    orcid: 'https://orcid.org/0000-0003-3680-7634'
+identifiers:
+  - type: doi
+    value: 10.13140/RG.2.2.31110.65603
+    description: Invariant-Driven Automated Testing
+repository-code: 'https://github.com/acm-ribeiro/magmact-gen'
+abstract: 'Generates an extended OAS with MagmaCt contracts. '
+date-released: '2023-02-24'
