@@ -1,6 +1,6 @@
 # MagmaCt-Gen #
 
-MagmaCt-Gen automatically generates an MagmaCt specification based on an existing OpenAPI Specification document.
+MagmaCt-Gen automatically generates an MagmaCt specification based on an existing OpenAPI Specification (OAS) document.
 The generated specification is an extension of the original OAS JSON file. 
 
 Currently, MagmaCt-Gen is not able to generate invariants. As such, we provide a useful catalog with the most common templates for 
@@ -29,7 +29,7 @@ The generated JSON file can then be used by Magma - a tool to automate the micro
 
 # MagmaCt <a name="magma-ct"></a>
 MagmaCt is a specification language to complement APIs' specifications based on first-order logic. Its purpose is to 
-extend the OpenAPI Specification (OAS) with useful properties for test generation, transforming these documents 
+extend the OAS with useful properties for test generation, transforming these documents 
 into useful testing artifacts. Apart from providing information for microservice testing, MagmaCt also provides 
 an API with semantic.
 
@@ -84,7 +84,7 @@ Players' API:
       GET      - returns the tournaments in which the player with the given `playerNIF` is enroled
 ```
 
-💡 The full OpenAPI Specification of this application can be found in the `scr/main/examples` directory. 
+💡 The full OAS of this application can be found in the `scr/main/examples` directory. 
 
 ## Catalog <a name="catalog"></a>
 
@@ -210,7 +210,7 @@ capacity.
 ## Generated File Structure <a name="file-structure"></a>
 The generated file will be a standard `.json` file. You can find a full example of an MagmaCt-Gen output in the 
 `src/main/examples` directory. The file `apostl_spec.json` is the output of executing MagmaCt-Gen with the 
-`tournaments.json` specification. This file is a standard OpenAPI Specification. The file `tournaments_extended.json` 
+`tournaments.json` specification. This file is a standard OAS. The file `tournaments_extended.json` 
 is a complete specification for the tournament's application, extended with a valid and complete MagmaCt specification. 
 
 ```json
