@@ -51,6 +51,7 @@ are the following:
 
 ```
 Tournaments' API: 
+```
    /tournaments/
       GET      - returns all tournaments 
       POST     - adds a new tournament
@@ -69,8 +70,9 @@ Tournaments' API:
    /tournaments/{tournamentId}/enrollments/{playerNIF}/
       GET      - checks if the player with the given `playerNIF` is enroled in the tournament with the given `tournamentId`
       DELETE   - deletes the enrolment of the player with the given `playerNIF` in the tournament with the given `tournamentId`
-   
+```   
 Players' API:
+```
    /players/
       GET      - returns all players 
       POST     - adds a new player
