@@ -1,10 +1,10 @@
 # MagmaCt-Gen #
 
-MagmaCt-Gen automatically generates an MagmaCt specification based on an existing OpenAPI Specification (OAS) document.
-The generated specification is an extension of the original OAS JSON file. 
+MagmaCt-Gen automatically generates MagmaCt contracts based on an existing OpenAPI Specification (OAS) document.
+The generated file is an extension of the original OAS `.json`. 
 
 Currently, MagmaCt-Gen is not able to generate invariants. As such, we provide a useful catalog with the most common templates for 
-the user to complement the generated specification. 
+the user to complement the generated contracts. 
 
 The generated JSON file can then be used by Magma - a tool to automate the microservice testing process. 
 
@@ -91,7 +91,7 @@ are the following:
 
 ## Catalog <a name="catalog"></a>
 
-This catalog is meant to be used as a tool to enrich the automatically generated MagmaCt specification. We first 
+This catalog is meant to be used as a tool to enrich the automatically generated MagmaCt contracts. We first 
 introduce what will be automatically generated. Then, we show how to write a set of predicates, or invariants, that can be adapted to the users' needs. The predicates will be illustrated with the help of the previously presented running example. 
 
 
@@ -114,8 +114,8 @@ insertion, the resource exists and what was inserted is exactly what we intended
 ```
 
 #### GET <a name="get"></a>
-To use them in MagmaCt specifications, we assume GET operations are pure, meaning the system state remains 
-unaltered. As such, their specification is as permissible as possible. 
+To use them in MagmaCt contracts, we assume GET operations are pure, meaning the system state remains 
+unaltered. As such, their contract is as permissible as possible. 
 
 ```
    Requires:
@@ -214,7 +214,7 @@ capacity.
 The generated file will be a standard `.json` file. You can find a full example of an MagmaCt-Gen output in the 
 `src/main/examples` directory. The file `apostl_spec.json` is the output of executing MagmaCt-Gen with the 
 `tournaments.json` specification. This file is a standard OAS. The file `tournaments_extended.json` 
-is a complete specification for the tournament's application, extended with a valid and complete MagmaCt specification. 
+is a complete specification for the tournament's application, extended with valid and complete MagmaCt contracts. 
 
 ```json
 {
