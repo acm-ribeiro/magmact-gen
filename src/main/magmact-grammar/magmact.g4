@@ -1,5 +1,4 @@
-grammar apostl ;
-
+grammar magmact;
 
 formula
 	: quantifiedFormula
@@ -42,7 +41,7 @@ comparison
 
 leftTerm
 	: call
-	| param
+	| LCURL? param RCURL?
 	;
 
 rightTerm
@@ -61,13 +60,28 @@ operationPrevious
 	;
 
 operation
-	: operationHeader LPAR operationParameter RPAR function?
+	: operationHeader LPAR operationParameter RPAR operationSuffix?
+	| pathParameter
+	| queryParameter
+	;
+
+operationSuffix
+	: function
+	| LCURL stringParam RCURL
 	;
 
 operationHeader
 	: 'request_body'
 	| 'response_body'
 	| 'response_code'
+	;
+
+pathParameter
+	: 'path_param' LPAR THIS LSTR8 INT RSTR8 RPAR
+	;
+
+queryParameter
+	: 'query_param' LPAR THIS RPAR LCURL STRING RCURL
 	;
 
 operationParameter
@@ -108,10 +122,18 @@ booleanOperator
 booleanValue
 	: 'T'
 	| 'F'
+	| 'True'
+	| 'False'
+	| 'true'
+	| 'false'
+	;
+
+stringParam
+	: STRING ('.' STRING)*
 	;
 
 param
-	: STRING ('.' STRING)*
+	: stringParam
 	| INT
 	;
 
@@ -122,11 +144,12 @@ segment
 block
 	: LCURL blockParameter RCURL
 	| STRING
+	| INT
+	| operation
 	;
 
 blockParameter
 	: STRING ('.' STRING)?
-	| call
 	;
 
 function
@@ -150,7 +173,7 @@ THIS
 	;
 
 STRING
-	: [A-Za-z0-9]+
+	: [0-9_@\-]*[A-Za-z_@]+[A-Za-z0-9_@\-]*
 	;
 
 INT
@@ -176,6 +199,15 @@ LPAR
 RPAR
 	: ')'
 	;
+
+LSTR8
+	: '['
+	;
+
+RSTR8
+	: ']'
+	;
+
 
 NEWLINE
 	: ('\r'? '\n' | '\r')+

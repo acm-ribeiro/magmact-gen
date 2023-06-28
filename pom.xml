@@ -27,9 +27,17 @@
         </plugins>
     </build>
 
+    <!-- Add dependencies from github repositories -->
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <properties>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -46,7 +54,6 @@
             <artifactId>openapi-parser</artifactId>
             <version>1.0.7</version>
         </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/edu.stanford.nlp/stanford-corenlp -->
         <dependency>
@@ -69,6 +76,20 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.36</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- MagmaCt parser -->
+        <dependency>
+            <groupId>com.github.acm-ribeiro</groupId>
+            <artifactId>magmact-parser</artifactId>
+            <version>b30ec37</version>
+        </dependency>
+
+        <!-- Evo Inflector: pluralizes english words -->
+        <dependency>
+            <groupId>org.atteo</groupId>
+            <artifactId>evo-inflector</artifactId>
+            <version>1.3</version>
         </dependency>
     </dependencies>
 </project>

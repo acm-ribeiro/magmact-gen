@@ -52,42 +52,42 @@ are the following:
 
 :small_blue_diamond: Tournaments' API: 
 ```
-   /tournaments/
+   /tournaments
       GET      - returns all tournaments 
       POST     - adds a new tournament
-   /tournaments/{tournamentId}/
+   /tournaments/{tournamentId}
       GET      - returns the tournament with the given {tournamentId}
       PUT      - updated the tournament with the given {tournamentId}
       DELETE   - deletes the tournament with the given {tournamentId}
    
-   /tournaments/{tournamentId}/capacity/
+   /tournaments/{tournamentId}/capacity
       GET      - returns the capacity of the tournament with the given {tournamentId}
    
-   /tournaments/{tournamentId}/enrolments/
+   /tournaments/{tournamentId}/enrolments
       POST     - enrols a player in the tournament with the given {tournamentId}
       GET      - returns the players enroled in the tournament with the given {tournamentId}
  
-   /tournaments/{tournamentId}/enrollments/{playerNIF}/
+   /tournaments/{tournamentId}/enrollments/{playerNIF}
       GET      - checks if the player with the given {playerNIF} is enroled in the tournament with the given {tournamentId}
       DELETE   - deletes the enrolment of the player with the given {playerNIF} in the tournament with the given {tournamentId}
 ```   
 
 :small_blue_diamond: Players' API:
 ```
-   /players/
+   /players
       GET      - returns all players 
       POST     - adds a new player
    
-   /players/{playerNIF}/
+   /players/{playerNIF}
       GET      - returns the player with the given {playerNIF}
       PUT      - updates the player with the given {playerNIF}
       DELETE   - deletes the player with the given {playerNIF}
    
-   /players/{playerNIF}/enrollments/
+   /players/{playerNIF}/enrollments
       GET      - returns the tournaments in which the player with the given {playerNIF} is enroled
 ```
 
-💡 The full OAS of this application can be found in the `scr/main/examples` directory. 
+💡 The full OAS of this application can be found in `scr/main/examples/tournaments.json`. 
 
 ## Catalog <a name="catalog"></a>
 
@@ -135,7 +135,7 @@ insertion, the resource still exists and the stored data was exactly what we int
 
    Ensures:
       response_code(GET /players/{playerID}) == 200
-      response_body(this) == request_body(this)
+      request_body(this) != previous(response_body(GET /players/{playerNIF}))
 ```
 
 #### DELETE <a name="delete"></a>
@@ -148,7 +148,6 @@ removal, the resource does not exist and that what was removed was exactly what 
 
    Ensures:
       response_code(GET /players/{playerID}) == 404
-      response_body(this) == previous(response_body(GET/players/{playerID}))
 ```
 
 ### Integrity Constraints <a name="integrity-constraints"></a>

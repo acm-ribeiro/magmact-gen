@@ -138,7 +138,6 @@ public class OASCustomParser {
 				else
 					throw new NotJSONContentType(operation.getOperationId());
 
-			System.out.println(operation.getOperationId());
 			if (isReferenced && immediateReferenced)
 				type = operation.getRequestBody().toNode().get("$ref").asText();
 			else if (isReferenced && hasJSONContentType)

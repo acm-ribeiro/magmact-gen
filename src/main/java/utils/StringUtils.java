@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 import com.google.gson.JsonElement;
-import oas_custom_parser.domain.URI;
 
 
 public class StringUtils {
@@ -13,34 +12,6 @@ public class StringUtils {
 	// Converts an entry set to a list of entries
 	public static List<Entry<String, JsonElement>> fromEntrySetToList(Set<Entry<String, JsonElement>> properties) {
 		return new ArrayList<>(properties);
-	}
-
-	public static String getResourceUrl(URI uri){
-		StringBuilder resourceId = new StringBuilder();
-
-		List<String> parts = uri.getParts();
-
-		int last_id_index = 0;
-
-		for(int i = 0; i < parts.size(); i++)
-			if(parts.get(i).contains("{"))
-				last_id_index = i;
-
-		List<String> resourceParts = parts.subList(0, last_id_index);
-
-		for(String s : resourceParts)
-			resourceId.append(s).append("/");
-
-		return resourceId.toString();
-	}
-
-	public static String getResourceName(String resourceUrl) {
-		String[] parts = resourceUrl.split("/");
-		System.out.println("PARTS:");
-		for(String str : parts)
-			System.out.println(str);
-		System.out.println();
-		return parts[parts.length - 1];
 	}
 
 	public static List<String> getOnes(String url) {
@@ -84,17 +55,6 @@ public class StringUtils {
 		result.remove("");
 
 		return result;
-	}
-
-	public static int getNumUrlParams(String url) {
-		List<String> parts = List.of(url.split("/"));
-		int params = 0;
-
-		for(String p : parts)
-			if(p.contains("{"))
-				params++;
-
-		return params;
 	}
 
 	private static String getOne(List<String> parts){

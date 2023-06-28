@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 
 public class Specification {
@@ -40,8 +41,32 @@ public class Specification {
 		return servers;
 	}
 	
-	public Map<String, APIOperation> getOperations() {
+	public Map<String, APIOperation> getOperationsById() {
 		return operationsById;
+	}
+
+	/**
+	 * Returns operations by path, method and id. e.g, < "/resources", <"GET", APIOperation> >
+	 * @return operations by path.
+	 */
+	public Map<String, Map<String, APIOperation>> getOperationsByPath() {
+		Map<String, Map<String, APIOperation>> by_path = new HashMap<>();
+		APIOperation op;
+		String verb, uri;
+		Map<String, APIOperation> path_ops;
+
+		for (Entry<String, APIOperation> e : operationsById.entrySet()) {
+			op = e.getValue();
+			uri = op.getUri().toString();
+			verb = op.getVerb();
+
+			path_ops = by_path.containsKey(uri) ? by_path.get(uri) : new HashMap<>();
+			path_ops.put(verb, op);
+
+			by_path.put(uri, path_ops);
+		}
+
+		return by_path;
 	}
 	
 	public List<String> getInvariants() {
@@ -182,6 +207,28 @@ public class Specification {
 				}
 			}
 			System.out.println();
+		}
+	}
+
+	public void printOperationsByPaths() {
+		Map<String, Map<String, APIOperation>> by_path = getOperationsByPath();
+		Map<String, APIOperation> path_ops;
+		APIOperation op;
+		String uri, verb, op_id;
+
+		for (Entry<String, Map<String, APIOperation>> e1 : by_path.entrySet()) {
+			uri = e1.getKey();
+			path_ops = e1.getValue();
+
+			System.out.println(uri + ":");
+
+			for (Entry<String, APIOperation> e2 : path_ops.entrySet()) {
+				op = e2.getValue();
+				op_id = op.getOperationId();
+				verb = e2.getKey();
+
+				System.out.println("\t" + verb + " " + op_id);
+			}
 		}
 	}
 

@@ -21,7 +21,8 @@ import java.io.IOException;
 
 public class Main {
 
-    public static final String DIRECTORY = "apostl-specs";
+    public static final String DIRECTORY = "magmact-contracts";
+
 
     public static void main(String[] args) throws EncodeException, IOException {
         // Checking arguments
@@ -34,17 +35,20 @@ public class Main {
         File specFile = new File(filepath);
 
         try {
-            // Creating apostl-specs directory if it does not exist
+            // Creating magmact-contracts directory if it does not exist
             createDirectory();
 
             // Parsing OAS
             Specification spec = OASCustomParser.parse(specFile);
 
-            // Generating APOSTL specification
+            // Generating MAGMACt contracts
             MagmaCtGen.generate(spec);
 
             // Serialization
             serialize(new SpecificationWrapper(spec), createJsonFile(specFile.getName()));
+
+            // Print contracts
+            MagmaCtGen.print_contracts(spec);
 
         } catch(ValidationException e) {
             e.printStackTrace();
@@ -56,17 +60,21 @@ public class Main {
 
     private static void createDirectory() throws CreateDirectoryException {
         File directory = new File(DIRECTORY);
+        boolean created = false;
 
         if (!directory.exists())
-            directory.mkdir();
+            created = directory.mkdir();
+
+        if (created)
+            System.out.println("Created new directory: /" + DIRECTORY);
 
         if (!directory.exists())
             throw new CreateDirectoryException(DIRECTORY);
     }
 
     private static FileWriter createJsonFile(String filename) throws IOException {
-        String apostl_filename = filename.replace(".json", "") + "-magmact.json";
-        return new FileWriter(DIRECTORY + "/" + apostl_filename);
+        String magmact_filename = filename.replace(".json", "") + "-magmact.json";
+        return new FileWriter(DIRECTORY + "/" + magmact_filename);
     }
 
     private static void serialize(SpecificationWrapper wrapper, FileWriter writer) throws IOException {

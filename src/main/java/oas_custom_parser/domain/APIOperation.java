@@ -105,6 +105,11 @@ public class APIOperation {
 		return numParams > 1;
 	}
 
+	/**
+	 * Checks if the operation is a "get one" method. This means the HTTP request will return only one resource.
+	 * According to the standard, a URI ending with a parameter (usually a resource ID) will return a single resource.
+	 * @return true when the operation URI ends with a parameter; false otherwise.
+	 */
 	public boolean isGetOne() {
 		List<String> parts = uri.getParts();
 		boolean isParam = parts.get(parts.size() - 1).contains("{");

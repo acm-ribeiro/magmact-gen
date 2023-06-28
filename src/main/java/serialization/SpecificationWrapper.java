@@ -28,7 +28,7 @@ public class SpecificationWrapper {
         paths = new HashMap<>();
 
         for(String pathName: spec.getPaths()) {
-            Map<String, APIOperation> operationsByID = spec.getOperations();
+            Map<String, APIOperation> operationsByID = spec.getOperationsById();
             Map<String, OperationWrapper> operations = new HashMap<>();
 
             for(Entry<String, APIOperation> e: operationsByID.entrySet()) {
