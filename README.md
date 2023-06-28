@@ -251,9 +251,8 @@ In order to execute the MagmaCt-Gen `.jar` file, you can do the following:
 
 ``java -jar magmact-gen.jar <path_to_oas_json>``
 
-The generated json specification will be stored in the `.jar` location. 
+The generated json specification will be under the `magmact-contracts` directory. 
 
 ---
 ### Support <a name="support"></a>
-For any questions related to the Magma framework, please contact 
-[acm.ribeiro@campus.fct.unl.pt](mailto:acm.ribeiro@campus.fct.unl.pt)
+For any questions related to the Magma framework, please contact Ana Ribeiro ([acm.ribeiro@campus.fct.unl.pt](mailto:acm.ribeiro@campus.fct.unl.pt))
