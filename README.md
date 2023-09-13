@@ -43,7 +43,7 @@ The grammar file can be consulted in the `src/main/magmact-grammar` directory.
 # Running Example: Tournaments Management Application <a name="example"></a>
 We'll use this example to illustrate the catalog's properties. 
 
-This application maintains information about `players` and `tournaments`. Players compete in tournaments, for which they can
+This application maintains information about `players` and `tournaments`. Players compete in tournaments, from which they can
 be enrolled and disenrolled. Each tournament has a maximum capacity.
 
 This application has two APIs: one responsible for managing `players`, and another for managing `tournaments` resources. The APIs 
