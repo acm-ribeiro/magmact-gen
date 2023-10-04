@@ -211,7 +211,7 @@ capacity.
 
 ## Generated File Structure <a name="file-structure"></a>
 The generated file will be a standard `.json` file. You can find a full example of a MagmaCt-Gen output in the 
-`src/main/examples` directory. The file `apostl_spec.json` is the output of executing MagmaCt-Gen with the 
+`src/main/examples` directory. The file `magmact_spec.json` is the output of executing MagmaCt-Gen with the 
 `tournaments.json` specification. This file is a standard OAS. The file `tournaments_extended.json` 
 is a complete specification for the tournament's application, extended with valid and complete MagmaCt contracts. 
 
