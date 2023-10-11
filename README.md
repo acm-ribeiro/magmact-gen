@@ -89,7 +89,7 @@ are the following:
 
 💡 The full OAS of this application can be found in `scr/main/examples/tournaments.json`. 
 
-## catalogue <a name="catalogue"></a>
+## Catalogue <a name="catalogue"></a>
 
 This catalogue is meant to be used as a tool to enrich the automatically generated MagmaCt contracts. We first 
 introduce what will be automatically generated. Then, we show how to write a set of predicates, or invariants, that can be adapted to the users' needs. The predicates will be illustrated with the help of the previously presented running example. 
