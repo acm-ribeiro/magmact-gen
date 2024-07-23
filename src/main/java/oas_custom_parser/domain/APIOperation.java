@@ -132,7 +132,7 @@ public class APIOperation {
 		return builder.substring(0, builder.length() - 2) + "}\n";
 	}
 
-	public void printAPOSTL() {
+	public void printMAGMACT() {
 		System.out.println("      Requires");
 
 		for(String req: requires)

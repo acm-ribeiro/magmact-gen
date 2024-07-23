@@ -13,12 +13,14 @@ import java.util.Map.Entry;
 public class SpecificationWrapper {
 
     private List<String> servers; // server urls
+    private List<String> tags;
     private List<String> invariants;
     private Map<String, Map<String, OperationWrapper>> paths;
     private List<SchemaWrapper> schemas;
 
     public SpecificationWrapper(Specification spec){
         servers = spec.getServers();
+        tags = spec.getTags();
         invariants = spec.getInvariants();
         schemas = new ArrayList<>();
 

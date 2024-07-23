@@ -62,12 +62,14 @@ public class MagmaCtGen {
 
                     // Checking whether the contract is complete
                     // Using the singular of the resource name to compare with the schema
-                    request_body = op.getBody().getName();
-                    last_part = Lemmatizer.root(uri_parts.get(uri_parts.size() - 1));
+                    if (op.getBody() != null) {
+                        request_body = op.getBody().getName();
+                        last_part = Lemmatizer.root(uri_parts.get(uri_parts.size() - 1));
 
-                    // If the resource name is different from the schema, then there's a chance the contract is incomplete.
-                    if(!request_body.equalsIgnoreCase(last_part))
-                        incomplete_contract(op);
+                        // If the resource name is different from the schema, then there's a chance the contract is incomplete.
+                        if(!request_body.equalsIgnoreCase(last_part))
+                            incomplete_contract(op);
+                    }
                 }
 
                 case GET -> {
