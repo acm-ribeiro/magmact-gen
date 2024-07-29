@@ -329,6 +329,7 @@ public class OASCustomParser {
         Map<String, org.openapi4j.parser.model.v3.Schema> props = s.getProperties();
         List<APIProperty> properties = new ArrayList<>();
         List<String> requiredFields;
+
         String name, type, regex, itemsType, itemsFormat, itemsPattern, format, ref;
         int minimum, maximum;
         boolean required, gen, isCollection;
@@ -370,7 +371,8 @@ public class OASCustomParser {
                 itemsType = s.getItemsSchema().getRef();
 
                 APIProperty property = new APIProperty(schemaName, schemaType, "", "",
-                        itemsType, null, null, null, NO_MIN, NO_MAX, true, true, false);
+                        itemsType, null, null, null, NO_MIN, NO_MAX,
+                        true, true, false);
                 properties.add(property);
 
                 schema = new Schema(s.getType(), schemaName, properties);
@@ -410,6 +412,12 @@ public class OASCustomParser {
                                     itemsFormat, itemsPattern, null, minimum, maximum, isCollection,
                                     required,
                                     gen));
+
+                            if (isCollection) {
+                                System.out.println("Schema [" + schemaName + "] has array " +
+                                        "properties that need to be defined. Look for \"?\".");
+                            }
+
                         } else {
                             // The property has a referenced schema
                             ref = propertiesEntry.getValue().getRef().replace("/components", "");
