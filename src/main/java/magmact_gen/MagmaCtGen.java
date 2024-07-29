@@ -98,6 +98,9 @@ public class MagmaCtGen {
 
                         // response_code(GET /resource_name/{resource_id}) == 404
                         op.addPostcondition(response_code(resource, id, null, NOT_FOUND).toString());
+
+                        // request_body(this) != previous(response_body(GET /resource/{id}))
+                        op.addPostcondition(previous(resource, id).toString());
                     }
                 }
 

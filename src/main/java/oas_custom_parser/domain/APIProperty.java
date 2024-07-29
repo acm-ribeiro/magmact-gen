@@ -2,16 +2,20 @@ package oas_custom_parser.domain;
 
 public class APIProperty {
 
-	private String name, type, pattern, format, itemsType, ref;
+	private String name, type, pattern, format, itemsType, itemsFormat, itemsPattern, ref;
 	private int minimum, maximum;
 	private boolean isCollection, required, gen;
 
-	public APIProperty(String name, String type, String pattern, String format, String itemsType, String ref, int minimum,  int maximum, boolean isCollection, boolean required, boolean gen) {
+	public APIProperty(String name, String type, String pattern, String format, String itemsType,
+					   String itemsFormat, String itemsPattern, String ref, int minimum,
+					   int maximum, boolean isCollection, boolean required, boolean gen) {
 		this.name = name;
 		this.type = type;
 		this.pattern = pattern;
 		this.format = format;
 		this.itemsType = itemsType;
+		this.itemsFormat = itemsFormat;
+		this.itemsPattern = itemsPattern;
 		this.minimum = minimum;
 		this.maximum = maximum;
 		this.isCollection = isCollection;
@@ -52,10 +56,18 @@ public class APIProperty {
 		return maximum;
 	}
 	
-	public String getItemType() {
+	public String getItemsType() {
 		return itemsType;
 	}
-	
+
+	public String getItemsFormat() {
+		return itemsFormat;
+	}
+
+	public String getItemsPattern() {
+		return itemsPattern;
+	}
+
 	public String getPattern() {
 		return pattern;
 	}

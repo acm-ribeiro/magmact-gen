@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SchemaWrapper extends RequestBodySchema {
-    private String name, type;
-    private List<PropertyWrapper> properties;
+    private final String name, type;
+    private final List<PropertyWrapper> properties;
 
     public SchemaWrapper(String type, String name, List<APIProperty> properties) {
         this.type = type;
@@ -32,7 +32,7 @@ public class SchemaWrapper extends RequestBodySchema {
 
                     case "array" -> this.properties.add(
                             new ArrayPropertyWrapper(prop.getName(), prop.getType(), prop.isRequired(), prop.gen(),
-                                    prop.getItemType())
+                                    prop.getItemsType(), prop.getItemsFormat())
                     );
                 }
             }

@@ -25,8 +25,9 @@ public class URLParameterWrapper {
                     this.schema = new URLStringPropertyWrapper(prop.getName(), prop.getType(), pattern);
                     break;
                 case "array":
-                    System.out.println(prop.getItemType());
-                    this.schema = new URLArrayPropertyWrapper(prop.getName(), prop.getType(), prop.getItemType());
+                    System.out.println(prop.getItemsType());
+                    this.schema = new URLArrayPropertyWrapper(prop.getName(), prop.getType(),
+                            prop.getItemsType());
                     break;
             }
         }
