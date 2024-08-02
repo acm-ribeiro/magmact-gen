@@ -55,20 +55,15 @@
             <version>1.0.7</version>
         </dependency>
 
+
         <!-- https://mvnrepository.com/artifact/edu.stanford.nlp/stanford-corenlp -->
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
-            <version>4.4.0</version>
-        </dependency>
-
-        <!-- required for the previous dependency -->
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>4.4.0</version>
+            <version>4.5.7</version>
             <classifier>models</classifier>
         </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
         <dependency>
@@ -78,11 +73,11 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- MagmaCt parser -->
+        <!-- contract parser -->
         <dependency>
             <groupId>com.github.acm-ribeiro</groupId>
             <artifactId>magmact-parser</artifactId>
-            <version>b30ec37</version>
+            <version>d42762503d</version>
         </dependency>
 
         <!-- Evo Inflector: pluralizes english words -->
