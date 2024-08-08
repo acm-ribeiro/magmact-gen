@@ -45,7 +45,8 @@ public class Main {
             MagmaCtGen.generate(spec);
 
             // Serialization
-            serialize(new SpecificationWrapper(spec), createJsonFile(specFile.getName()));
+            SpecificationWrapper specWrapper = new SpecificationWrapper(spec);
+            serialize(specWrapper, createJsonFile(specFile.getName()));
 
             // Print contracts
             MagmaCtGen.print_contracts(spec);

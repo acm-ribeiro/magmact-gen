@@ -4,7 +4,6 @@ import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.logging.RedwoodConfiguration;
 import org.atteo.evo.inflector.English;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

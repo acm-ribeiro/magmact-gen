@@ -39,7 +39,8 @@ public class SpecificationWrapper {
                 if(op.getUri().toString().equalsIgnoreCase(pathName)) {
                     operations.put(op.getVerb(),
                             new OperationWrapper(op.getRequires(), op.getEnsures(), op.getOperationId(),
-                                    op.getBody(), op.getPathParams(), op.getQueryParams(), op.getResponses())
+                                    op.getBody(), op.getPathParams(), op.getQueryParams(),
+                                    op.getResponses(), op.getTags())
                     );
 
                     paths.put(pathName, operations);

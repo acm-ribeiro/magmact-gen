@@ -14,14 +14,18 @@ public class OperationWrapper {
     private List<URLParameterWrapper> pathParams, queryParams;
     private RequestBodySchema requestBody;
     private List<APIResponse> responses;
+    private List<String> tags;
 
-    public OperationWrapper(List<String> requires, List<String> ensures, String operationID, Schema requestBody, List<URLParameter> path, List<URLParameter> query, List<APIResponse> responses) {
+    public OperationWrapper(List<String> requires, List<String> ensures, String operationID,
+                            Schema requestBody, List<URLParameter> path, List<URLParameter> query
+            , List<APIResponse> responses, List<String> tags) {
         this.ensures = ensures;
         this.requires = requires;
         this.operationID = operationID;
         pathParams = new ArrayList<>();
         queryParams = new ArrayList<>();
         this.responses = responses;
+        this.tags = tags;
 
         initRequestBody(requestBody);
 
