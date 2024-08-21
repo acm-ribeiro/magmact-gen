@@ -330,71 +330,68 @@ public class OASCustomParser {
         List<APIProperty> properties = new ArrayList<>();
         List<String> requiredFields;
 
-        String name, type, regex, itemsType, itemsFormat, itemsPattern, format, ref;
+        String name, type, pattern, itemsType, itemsFormat, itemsPattern, format, ref;
         int minimum, maximum;
         boolean required, gen, isCollection;
 
         String schemaType = s.getType();
 
         switch (schemaType) {
-            case NUMBER -> {
+            case INTEGER -> {
                 minimum = s.getMinimum() != null ? (int) s.getMinimum() : NO_MIN;
                 maximum = s.getMaximum() != null ? (int) s.getMaximum() : NO_MAX;
                 format = s.getFormat() != null ? s.getFormat() : "";
 
-                APIProperty property = new APIProperty(schemaName, schemaType, "", format, "", null,
-                        null, null, minimum, maximum, false, true, false);
+                APIProperty property = new APIProperty(schemaName, schemaType, "", format,
+                        "", null, null, null, minimum, maximum,
+                        false, true, false);
 
                 properties.add(property);
-
                 schema = new Schema(s.getType(), schemaName, properties);
             }
             case STRING -> {
-                regex = s.getPattern() != null ? s.getPattern() : "";
-
-                APIProperty property = new APIProperty(schemaName, schemaType, regex, "", "",
-                        null, null, null, NO_MIN, NO_MAX, false, true, false);
-
+                pattern = s.getPattern() != null ? s.getPattern() : "";
+                APIProperty property = new APIProperty(schemaName, schemaType, pattern, "",
+                        "", null, null, null, NO_MIN, NO_MAX,
+                        false, true, false);
                 properties.add(property);
-
                 schema = new Schema(s.getType(), schemaName, properties);
             }
             case BOOLEAN -> {
-                APIProperty property = new APIProperty(schemaName, schemaType, "", "", "", null,
-                        null, null, NO_MIN, NO_MAX, false, true, false);
-
+                APIProperty property = new APIProperty(schemaName, schemaType, "", "",
+                        "", null, null, null, NO_MIN, NO_MAX,
+                        false, true, false);
                 properties.add(property);
-
                 schema = new Schema(s.getType(), schemaName, properties);
             }
             case ARRAY -> {
                 itemsType = s.getItemsSchema().getRef();
-
                 APIProperty property = new APIProperty(schemaName, schemaType, "", "",
                         itemsType, null, null, null, NO_MIN, NO_MAX,
                         true, true, false);
                 properties.add(property);
-
                 schema = new Schema(s.getType(), schemaName, properties);
             }
             case OBJECT -> {
                 if (props == null) {
                     properties = new ArrayList<>();
-                    System.out.println("Schema [" + schemaName + "] has no properties defined.\n");
+                    System.err.println("Schema [" + schemaName + "] has no properties defined.\n");
                 } else {
                     for (Entry<String, org.openapi4j.parser.model.v3.Schema> propertiesEntry : props.entrySet()) {
                         requiredFields = s.hasRequiredFields() ? s.getRequiredFields() : null;
-
                         name = propertiesEntry.getKey();
                         type = propertiesEntry.getValue().getType();
 
                         if (type != null) {
                             required = requiredFields != null && requiredFields.contains(name);
                             minimum = type.equals(INTEGER) && propertiesEntry.getValue().getMinimum() != null ?
-                                    (int) propertiesEntry.getValue().getMinimum() : NO_MIN;
+                                    (int) propertiesEntry.getValue().getMinimum()
+                                    : NO_MIN;
                             maximum = type.equals(INTEGER) && propertiesEntry.getValue().getMaximum() != null ?
-                                    (int) propertiesEntry.getValue().getMaximum() : NO_MAX;
-                            format = type.equals(INTEGER) ? propertiesEntry.getValue().getFormat() : "";
+                                    (int) propertiesEntry.getValue().getMaximum()
+                                    : NO_MAX;
+                            format = type.equals(INTEGER) ? propertiesEntry.getValue().getFormat()
+                                    : "";
 
                             isCollection = type.equalsIgnoreCase(ARRAY);
 
@@ -404,20 +401,18 @@ public class OASCustomParser {
                             itemsFormat = isCollection ? getItemsFormat(propertiesEntry.getValue()) : null;
                             itemsPattern = isCollection ? getItemsPattern(propertiesEntry.getValue()) : null;
 
-                            regex = schemaNode.get(PATTERN) != null ?
-                                    schemaNode.get(PATTERN).toString().replace("\"", "") : null;
+                            pattern = schemaNode.get(PATTERN) != null ?
+                                    schemaNode.get(PATTERN).toString().replace("\"", "")
+                                    : null;
                             gen = schemaNode.get(GEN) != null && schemaNode.get(GEN).asBoolean();
-
-                            properties.add(new APIProperty(name, type, regex, format, itemsType,
-                                    itemsFormat, itemsPattern, null, minimum, maximum, isCollection,
-                                    required,
-                                    gen));
+                            properties.add(new APIProperty(name, type, pattern, format, itemsType,
+                                    itemsFormat, itemsPattern, null, minimum, maximum,
+                                    isCollection, required, gen));
 
                             if (isCollection) {
                                 System.out.println("Schema [" + schemaName + "] has array " +
                                         "properties that need to be defined. Look for \"?\".");
                             }
-
                         } else {
                             // The property has a referenced schema
                             ref = propertiesEntry.getValue().getRef().replace("/components", "");

@@ -24,8 +24,9 @@ public class SpecificationWrapper {
         invariants = spec.getInvariants();
         schemas = new ArrayList<>();
 
-        for(Schema s : spec.getSchemas().values().stream().toList())
+        for (Schema s : spec.getSchemas().values().stream().toList()) {
             schemas.add(new SchemaWrapper(s.getType(), s.getName(), s.getProperties()));
+        }
 
         paths = new HashMap<>();
 
