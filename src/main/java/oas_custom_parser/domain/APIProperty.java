@@ -32,7 +32,7 @@ public class APIProperty {
 		return required;
 	}
 	
-	public boolean gen() {
+	public boolean isGen() {
 		return gen;
 	}
 
@@ -83,7 +83,7 @@ public class APIProperty {
 	public String toString () {		
 		String space = "\n        ";
 		if(isCollection)
-			return space + name + " {type: " + type + ", pattern: " + pattern + ", itemType: " + itemsType + ", required: " + required + "}";
+			return space + name + " {type: " + type + ", pattern: " + pattern + ", itemsType: " + itemsType + ", required: " + required + "}";
 		else if(minimum == -999 && format.equals(""))
 			return space + name + " {type: " + type + ", pattern: " + pattern + ", required: " + required + "}";
 		else if(minimum != -999 && format.equals(""))

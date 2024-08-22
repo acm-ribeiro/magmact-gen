@@ -44,7 +44,7 @@ public class Main {
             // Generating MAGMACt contracts
             MagmaCtGen.generate(spec);
 
-            // Serialization
+            // Serialization - required is wrong here
             SpecificationWrapper specWrapper = new SpecificationWrapper(spec);
             serialize(specWrapper, createJsonFile(specFile.getName()));
 

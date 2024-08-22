@@ -23,7 +23,6 @@ import oas_custom_parser.exceptions.NotJSONContentType;
 public class OASCustomParser {
 
     // custom properties
-    public static final String REGEX = "x-regex";
     public static final String GEN = "x-gen";
 
     // types
@@ -41,6 +40,12 @@ public class OASCustomParser {
     public static final String ITEMS = "items";
     public static final String REQUIRED = "required";
 
+    // oas paths
+    public static final String COMPONENTS_PATH = "/components";
+    public static final String SCHEMA_PATH = "#/components/schemas/";
+    public static final String PARAMS_PATH = "#/components/parameters/";
+    public static final String CUSTOM_SCHEMA_PATH = "#/schemas/";
+
     // content types
     public static final String JSON = "application/json";
     public static final String ENCODED_URL = "application/x-www-form-urlencoded";
@@ -51,6 +56,11 @@ public class OASCustomParser {
     // placeholders for min and max values, when not specified
     public static final int NO_MIN = -999;
     public static final int NO_MAX = 999;
+    public static final String NO_VAL = "";
+
+    // error messages
+    public static final String NO_PROPERTIES = "Schema [%s] has no properties defined.\n";
+    public static final String CONTENT_TYPES_ERR = "This specification has content types that not JSON.";
 
     public static Specification parse(File specFile) throws ValidationException, ResolutionException, EncodeException {
         // Parses and validates the OpenAPI file
@@ -80,7 +90,6 @@ public class OASCustomParser {
         List<String> tags;
         if (apiTags != null) {
             tags = new ArrayList<>(apiTags.size());
-
             for (Tag t : apiTags)
                 tags.add(t.getName());
         } else
@@ -102,6 +111,7 @@ public class OASCustomParser {
                 schemas.put(schemaName, parseSchema(schemaName, s));
             }
         }
+
         return schemas;
     }
 
@@ -129,13 +139,14 @@ public class OASCustomParser {
                 httpMethod = opEntry.getKey();
                 url = pathEntry.getKey();
                 operationId = op.getOperationId();
-                parameters = parseURLParameters(op);
+                parameters = parseURLParameters(op, api);
 
                 try {
                     body = parseRequestBodySchema(op, schemas);
                     responses = parseOperationResponses(op, schemas);
 
-                    operations.put(operationId, new APIOperation(url, httpMethod, operationId, body, parameters,
+                    operations.put(operationId,
+                            new APIOperation(url, httpMethod, operationId, body, parameters,
                             responses, contentTypes, op.getTags()));
                 } catch (NotJSONContentType e) {
                     System.out.println(e.getMessage());
@@ -172,9 +183,9 @@ public class OASCustomParser {
                 type = operation.getRequestBody().toNode().get(REF).asText();
             else if (isReferenced && hasJSONContentType)
                 type = operation.getRequestBody().toNode().get(CONTENT).get(JSON).get(SCHEMA).get(REF).asText();
-            else if (isReferenced )
+            else if (isReferenced)
                 type = operation.getRequestBody().toNode().get(CONTENT).get(ENCODED_URL).get(
-                                SCHEMA).get(REF).asText();
+                        SCHEMA).get(REF).asText();
             else
                 type = operation.getRequestBody().toNode().get(CONTENT).get(JSON).get(SCHEMA).get(TYPE).asText();
 
@@ -184,57 +195,67 @@ public class OASCustomParser {
         return body;
     }
 
-    private static List<URLParameter> parseURLParameters(Operation operation) throws EncodeException {
-        List<URLParameter> parameters = new ArrayList<>();
+    private static List<URLParameter> parseURLParameters(Operation operation, OpenApi3 api) throws EncodeException {
+        Map<String, Parameter> parameters = api.getComponents().getParameters();
+        List<URLParameter> urlParameters = new ArrayList<>();
+
+        String name = null, in = null, type, parameterSchema;
+        boolean required, gen;
+        org.openapi4j.parser.model.v3.Schema s;
 
         if (operation.hasParameters()) {
-            List<Parameter> params = operation.getParameters();
-
-            for (Parameter p : params) {
-                org.openapi4j.parser.model.v3.Schema s = p.getSchema();
+            List<Parameter> urlParams = operation.getParameters();
+            for (Parameter p : urlParams) {
                 List<APIProperty> URLSchema = new ArrayList<>();
 
-                // TODO we do not deal with referenced URL parameter schemas
-                if (s != null && s.getRef() == null) {
-                    String name, type, regex, itemsType = null, format = "";
-                    boolean required, gen, isCollection = false;
+                // Dealing with referenced schemas
+                if (p.isRef()) {
+                    p = parameters.get(p.getRef().replace(PARAMS_PATH, NO_VAL));
+                    parameterSchema = p.getSchema().getRef().replace(SCHEMA_PATH, NO_VAL);
+                    in = p.getIn();
+                    s = api.getComponents().getSchema(parameterSchema);
+                    required = p.isRequired();
+                } else {
+                    s = p.getSchema();
+                    required = s.toNode().get(REQUIRED) != null && s.toNode().get(REQUIRED).asBoolean();
+                }
+
+                JsonNode schemaNode = s.toNode();
+
+                // Dealing with inline schemas
+                if (!s.isRef()) {
+                    String itemsType = null, format = NO_VAL;
+                    boolean isCollection = false;
                     int minimum = -999, maximum = 999;
 
                     name = p.getName();
                     type = s.getType();
+                    gen = schemaNode.get(GEN) != null && schemaNode.get(GEN).asBoolean();
 
                     if (type != null) {
                         minimum = type.equals(INTEGER) && s.getMinimum() != null ? (int) s.getMinimum() : NO_MIN;
                         maximum = type.equals(INTEGER) && s.getMaximum() != null ? (int) s.getMaximum() : NO_MAX;
-                        format = type.equals(INTEGER) ? s.getFormat() : "";
+                        format = type.equals(INTEGER) ? s.getFormat() : NO_VAL;
                         isCollection = type.equalsIgnoreCase(ARRAY);
                     }
 
-                    // TODO what if it's not a referenced type?
                     if (isCollection) {
-                        boolean referencedItems = s.toNode().get(ITEMS).get(TYPE) == null;
-                        if (referencedItems)
-                            itemsType = getItemTypes(s.getItemsSchema());
-                        else
-                            itemsType = s.toNode().get(ITEMS).asText();
+                        boolean referencedItems = schemaNode.get(ITEMS).get(TYPE) == null;
+                        itemsType = referencedItems ?
+                                getItemTypes(s.getItemsSchema()) :
+                                s.toNode().get(ITEMS).asText();
                     }
 
-                    JsonNode schemaNode = s.toNode();
-                    regex = schemaNode.get(REGEX) != null ?
-                            schemaNode.get(REGEX).toString().replace("\"", "")
-                            : null;
-                    gen = schemaNode.get(GEN) != null && schemaNode.get(GEN).asBoolean();
-                    required = schemaNode.get(REQUIRED) != null && schemaNode.get(REQUIRED).asBoolean();
-
-                    URLSchema.add(new APIProperty(name, type, regex, format, itemsType, "",
+                    URLSchema.add(new APIProperty(name, type, NO_VAL, format, itemsType, NO_VAL,
                             null, null, minimum, maximum, isCollection, required, gen));
                 }
 
-                URLParameter urlParam = new URLParameter(p.getDescription(), p.getIn(), p.getName(), p.isRequired(), URLSchema);
-                parameters.add(urlParam);
+                URLParameter urlParam = new URLParameter(in, name, p.isRequired(), URLSchema);
+                urlParameters.add(urlParam);
             }
         }
-        return parameters;
+
+        return urlParameters;
     }
 
     private static List<APIResponse> parseOperationResponses(Operation op, Map<String, Schema> schemas) throws EncodeException {
@@ -245,7 +266,7 @@ public class OASCustomParser {
         List<String> contentTypes;
 
         for (Entry<String, Response> responseEntry : specResponses.entrySet()) {
-            String responseCode, description, schemaType = "", ref = "", contentSchemaFormat = "";
+            String responseCode, description, schemaType = NO_VAL, ref = NO_VAL, contentSchemaFormat = NO_VAL;
             ResponseSchema contentSchema = null;
 
             responseCode = responseEntry.getKey();
@@ -263,7 +284,7 @@ public class OASCustomParser {
                 else if (specResponse.getContentMediaType(ALL_CONTENT_TYPES) != null)
                     responseSchema = specResponse.getContentMediaType(ALL_CONTENT_TYPES).getSchema();
                 else {
-                    System.err.println("This specification has content types that are not JSON.");
+                    System.err.println(CONTENT_TYPES_ERR);
                     System.exit(1);
                 }
 
@@ -289,8 +310,8 @@ public class OASCustomParser {
                     }
 
                     // ref can be an object reference or the reference for the array items (mutually exclusive)
-                    if (ref.equals(""))
-                        contentSchema = new ResponseSchema(schemaType, contentSchemaFormat, null, null);
+                    if (ref.equals(NO_VAL))
+                        contentSchema = new ResponseSchema(schemaType, contentSchemaFormat, null, NO_VAL);
                     else
                         contentSchema = new ResponseSchema(schemaType, contentSchemaFormat, getReferencedSchema(ref, schemas), ref);
                 }
@@ -326,104 +347,14 @@ public class OASCustomParser {
 
     private static Schema parseSchema(String schemaName, org.openapi4j.parser.model.v3.Schema s) throws EncodeException {
         Schema schema = null;
-        Map<String, org.openapi4j.parser.model.v3.Schema> props = s.getProperties();
-        List<APIProperty> properties = new ArrayList<>();
-        List<String> requiredFields;
-
-        String name, type, pattern, itemsType, itemsFormat, itemsPattern, format, ref;
-        int minimum, maximum;
-        boolean required, gen, isCollection;
-
         String schemaType = s.getType();
 
         switch (schemaType) {
-            case INTEGER -> {
-                minimum = s.getMinimum() != null ? (int) s.getMinimum() : NO_MIN;
-                maximum = s.getMaximum() != null ? (int) s.getMaximum() : NO_MAX;
-                format = s.getFormat() != null ? s.getFormat() : "";
-
-                APIProperty property = new APIProperty(schemaName, schemaType, "", format,
-                        "", null, null, null, minimum, maximum,
-                        false, true, false);
-
-                properties.add(property);
-                schema = new Schema(s.getType(), schemaName, properties);
-            }
-            case STRING -> {
-                pattern = s.getPattern() != null ? s.getPattern() : "";
-                APIProperty property = new APIProperty(schemaName, schemaType, pattern, "",
-                        "", null, null, null, NO_MIN, NO_MAX,
-                        false, true, false);
-                properties.add(property);
-                schema = new Schema(s.getType(), schemaName, properties);
-            }
-            case BOOLEAN -> {
-                APIProperty property = new APIProperty(schemaName, schemaType, "", "",
-                        "", null, null, null, NO_MIN, NO_MAX,
-                        false, true, false);
-                properties.add(property);
-                schema = new Schema(s.getType(), schemaName, properties);
-            }
-            case ARRAY -> {
-                itemsType = s.getItemsSchema().getRef();
-                APIProperty property = new APIProperty(schemaName, schemaType, "", "",
-                        itemsType, null, null, null, NO_MIN, NO_MAX,
-                        true, true, false);
-                properties.add(property);
-                schema = new Schema(s.getType(), schemaName, properties);
-            }
-            case OBJECT -> {
-                if (props == null) {
-                    properties = new ArrayList<>();
-                    System.err.println("Schema [" + schemaName + "] has no properties defined.\n");
-                } else {
-                    for (Entry<String, org.openapi4j.parser.model.v3.Schema> propertiesEntry : props.entrySet()) {
-                        requiredFields = s.hasRequiredFields() ? s.getRequiredFields() : null;
-                        name = propertiesEntry.getKey();
-                        type = propertiesEntry.getValue().getType();
-
-                        if (type != null) {
-                            required = requiredFields != null && requiredFields.contains(name);
-                            minimum = type.equals(INTEGER) && propertiesEntry.getValue().getMinimum() != null ?
-                                    (int) propertiesEntry.getValue().getMinimum()
-                                    : NO_MIN;
-                            maximum = type.equals(INTEGER) && propertiesEntry.getValue().getMaximum() != null ?
-                                    (int) propertiesEntry.getValue().getMaximum()
-                                    : NO_MAX;
-                            format = type.equals(INTEGER) ? propertiesEntry.getValue().getFormat()
-                                    : "";
-
-                            isCollection = type.equalsIgnoreCase(ARRAY);
-
-                            JsonNode schemaNode = propertiesEntry.getValue().toNode();
-
-                            itemsType = isCollection ? getItemTypes(propertiesEntry.getValue()) : null;
-                            itemsFormat = isCollection ? getItemsFormat(propertiesEntry.getValue()) : null;
-                            itemsPattern = isCollection ? getItemsPattern(propertiesEntry.getValue()) : null;
-
-                            pattern = schemaNode.get(PATTERN) != null ?
-                                    schemaNode.get(PATTERN).toString().replace("\"", "")
-                                    : null;
-                            gen = schemaNode.get(GEN) != null && schemaNode.get(GEN).asBoolean();
-                            properties.add(new APIProperty(name, type, pattern, format, itemsType,
-                                    itemsFormat, itemsPattern, null, minimum, maximum,
-                                    isCollection, required, gen));
-
-                            if (isCollection) {
-                                System.out.println("Schema [" + schemaName + "] has array " +
-                                        "properties that need to be defined. Look for \"?\".");
-                            }
-                        } else {
-                            // The property has a referenced schema
-                            ref = propertiesEntry.getValue().getRef().replace("/components", "");
-                            properties.add(new APIProperty(name, null, "", "", "", "", "", ref,
-                                    NO_MIN, NO_MAX, false, false, false));
-                        }
-                    }
-                }
-
-                schema = new Schema(s.getType(), schemaName, properties);
-            }
+            case INTEGER, NUMBER -> schema = parseNumberSchema(schemaName, s);
+            case STRING  -> schema = parseStringSchema(schemaName, s);
+            case BOOLEAN -> schema = parseBooleanSchema(schemaName, s);
+            case ARRAY   -> schema = parseArraySchema(schemaName, s);
+            case OBJECT  -> schema = parseObjectSchema(schemaName, s);
         }
 
         return schema;
@@ -431,25 +362,129 @@ public class OASCustomParser {
 
     // Auxiliary Methods
 
+    private static Schema parseObjectSchema(String schemaName, org.openapi4j.parser.model.v3.Schema s) throws EncodeException {
+        Map<String, org.openapi4j.parser.model.v3.Schema> props = s.getProperties();
+        List<APIProperty> properties = new ArrayList<>();
+
+        if (props == null)
+            System.err.printf(NO_PROPERTIES, schemaName);
+        else {
+            List<String> requiredFields = s.hasRequiredFields() ? s.getRequiredFields() : null;
+            String name, type, refName;
+            String pattern = NO_VAL, itemsType = NO_VAL, itemsFormat = NO_VAL;
+            String ref = NO_VAL, itemsPattern = NO_VAL, format = NO_VAL;
+            int minimum = NO_MIN, maximum = NO_MAX;
+            boolean required, gen = false, isCollection = false;
+
+            for (Entry<String, org.openapi4j.parser.model.v3.Schema> propertiesEntry : props.entrySet()) {
+                name = propertiesEntry.getKey();
+                type = propertiesEntry.getValue().getType();
+
+                if (type != null) {
+                    required = requiredFields != null && requiredFields.contains(name);
+                    minimum = type.equals(INTEGER) && propertiesEntry.getValue().getMinimum() != null ?
+                            (int) propertiesEntry.getValue().getMinimum()
+                            : NO_MIN;
+                    maximum = type.equals(INTEGER) && propertiesEntry.getValue().getMaximum() != null ?
+                            (int) propertiesEntry.getValue().getMaximum()
+                            : NO_MAX;
+                    format = type.equals(INTEGER) ? propertiesEntry.getValue().getFormat()
+                            : NO_VAL;
+
+                    isCollection = type.equalsIgnoreCase(ARRAY);
+
+                    JsonNode schemaNode = propertiesEntry.getValue().toNode();
+
+                    itemsType = isCollection ? getItemTypes(propertiesEntry.getValue()) : NO_VAL;
+                    itemsFormat = isCollection ? getItemsFormat(propertiesEntry.getValue()) : NO_VAL;
+                    itemsPattern = isCollection ? getItemsPattern(propertiesEntry.getValue()) : NO_VAL;
+
+                    pattern = schemaNode.get(PATTERN) != null ?
+                            schemaNode.get(PATTERN).toString().replace("\"", NO_VAL)
+                            : null;
+                    gen = schemaNode.get(GEN) != null && schemaNode.get(GEN).asBoolean();
+                    ref = NO_VAL;
+                } else {
+                    // The property has a referenced schema
+                    ref = propertiesEntry.getValue().getRef().replace(COMPONENTS_PATH, NO_VAL);
+                    refName = ref.replace(CUSTOM_SCHEMA_PATH, NO_VAL);
+                    required = requiredFields != null && requiredFields.contains(refName);
+                }
+
+                properties.add(new APIProperty(name, type, pattern, format, itemsType, itemsFormat,
+                        itemsPattern, ref, minimum, maximum, isCollection, required, gen));
+            }
+        }
+
+        return new Schema(s.getType(), schemaName, properties);
+    }
+
+    private static Schema parseNumberSchema(String name, org.openapi4j.parser.model.v3.Schema s) throws EncodeException {
+        List<APIProperty> properties = new ArrayList<>();
+
+        int minimum = s.getMinimum() != null ? (int) s.getMinimum() : NO_MIN;
+        int maximum = s.getMaximum() != null ? (int) s.getMaximum() : NO_MAX;
+        String format = s.getFormat() != null ? s.getFormat() : NO_VAL;
+        JsonNode node = s.toNode();
+        boolean gen = node.get(GEN) != null && node.get(GEN).asBoolean();
+
+        APIProperty property = new APIProperty(name, s.getType(), NO_VAL, format, NO_VAL, NO_VAL,
+                NO_VAL, NO_VAL, minimum, maximum, false, true, gen);
+        properties.add(property);
+
+        return new Schema(s.getType(), name, properties);
+    }
+
+    private static Schema parseStringSchema(String name, org.openapi4j.parser.model.v3.Schema s) {
+        List<APIProperty> properties = new ArrayList<>();
+        String pattern = s.getPattern() != null ? s.getPattern() : NO_VAL;
+
+        APIProperty property = new APIProperty(name, s.getType(), pattern, NO_VAL,
+                NO_VAL, NO_VAL, null, NO_VAL, NO_MIN, NO_MAX,
+                false, true, false);
+        properties.add(property);
+
+        return new Schema(s.getType(), name, properties);
+    }
+
+    private static Schema parseBooleanSchema(String name, org.openapi4j.parser.model.v3.Schema s) {
+        List<APIProperty> properties = new ArrayList<>();
+
+        APIProperty property = new APIProperty(name, s.getType(), NO_VAL, NO_VAL, NO_VAL, NO_VAL,
+                NO_VAL, NO_VAL, NO_MIN, NO_MAX, false, true, false);
+        properties.add(property);
+
+        return new Schema(s.getType(), name, properties);
+    }
+
+    private static Schema parseArraySchema(String name, org.openapi4j.parser.model.v3.Schema s) {
+        List<APIProperty> properties = new ArrayList<>();
+        String itemsType = s.getItemsSchema().getRef();
+
+        APIProperty property = new APIProperty(name, s.getType(), NO_VAL, NO_VAL, itemsType,
+                NO_VAL, NO_VAL, NO_VAL, NO_MIN, NO_MAX, true, true, false);
+        properties.add(property);
+
+        return new Schema(s.getType(), name, properties);
+    }
+
     private static String getItemTypes(org.openapi4j.parser.model.v3.Schema schema) throws EncodeException {
         boolean isReferenced = schema.toNode().get(ITEMS).get(REF) != null;
 
-        if (isReferenced) {
-            String[] split = schema.toNode().get(ITEMS).get(REF).toString()
-                    .replace("\"", "")
-                    .split("/");
-            return split[split.length - 1];
-        } else {
+        if (isReferenced)
+            return schema.toNode().get(ITEMS).get(REF).toString()
+                    .replace(COMPONENTS_PATH, NO_VAL)
+                    .replace("\"", NO_VAL);
+        else
             return schema.getItemsSchema().getType();
-        }
     }
 
     private static String getItemsFormat(org.openapi4j.parser.model.v3.Schema schema) throws EncodeException {
-        return getItemTypes(schema).equals(INTEGER) ? schema.getItemsSchema().getFormat() : "";
+        return getItemTypes(schema).equals(INTEGER) ? schema.getItemsSchema().getFormat() : NO_VAL;
     }
 
     private static String getItemsPattern(org.openapi4j.parser.model.v3.Schema schema) throws EncodeException {
-        return getItemTypes(schema).equals(STRING) ? schema.getItemsSchema().getPattern() : "";
+        return getItemTypes(schema).equals(STRING) ? schema.getItemsSchema().getPattern() : NO_VAL;
     }
 
     private static Schema getReferencedSchema(String refType, Map<String, Schema> schemas) {

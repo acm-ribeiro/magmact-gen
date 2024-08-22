@@ -4,41 +4,41 @@ import java.util.List;
 
 public class Schema {
 
-	private String type, name;
-	private List<APIProperty> properties;
+    private final String type, name;
+    private final List<APIProperty> properties;
 
-	public Schema(String type, String name, List<APIProperty> properties) {
-		this.type = type;
-		this.name = name;
-		this.properties = properties;
-	}
+    public Schema(String type, String name, List<APIProperty> properties) {
+        this.type = type;
+        this.name = name;
+        this.properties = properties;
+    }
 
-	public boolean isRef() {
-		return type.contains("$");
-	}
+    public boolean isRef() {
+        return type.contains("$");
+    }
 
-	public String getType() {
-		return type;
-	}
-	
-	public String getName() {
-		return name;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public List<APIProperty> getProperties() {
-		return properties;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String toString() {
-		StringBuilder s = new StringBuilder("[ ");
+    public List<APIProperty> getProperties() {
+        return properties;
+    }
 
-		if (properties.isEmpty())
-			s.append(name).append(": ").append(type);
-		else
-			for (APIProperty p : properties)
-				s.append(p.toString());
+    public String toString() {
+        StringBuilder s = new StringBuilder("[ ");
 
-			return s + "\n]";
-	}
+        if (properties.isEmpty())
+            s.append(name).append(": ").append(type);
+        else
+            for (APIProperty p : properties)
+                s.append(p.toString());
+
+        return s + "\n]";
+    }
 
 }

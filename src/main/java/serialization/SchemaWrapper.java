@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SchemaWrapper extends RequestBodySchema {
+
+    private static final String INTEGER = "integer";
+    private static final String STRING = "string";
+    private static final String ARRAY = "array";
+
     private final String name, type;
     private final List<PropertyWrapper> properties;
 
@@ -15,28 +20,37 @@ public class SchemaWrapper extends RequestBodySchema {
         this.properties = new ArrayList<>();
 
         for (APIProperty prop : properties) {
-
-            if (prop.getType() == null) { // the schema is referenced
-                this.properties.add(new ObjectPropertyWrapper(prop.getName(), "object", false, false, prop.getRef()));
-            } else {
+            if (prop.getType() == null)  // the schema is referenced
+                this.properties.add(new ObjectPropertyWrapper(prop.getName(), prop.getType(),
+                        prop.isRequired(), prop.isGen(), prop.getRef()));
+            else {
                 switch (prop.getType().toLowerCase()) {
-                    case "integer" -> this.properties.add(
-                            new IntegerPropertyWrapper(prop.getName(), prop.getType(), prop.isRequired(), prop.gen(),
+                    case INTEGER -> this.properties.add(
+                            new IntegerPropertyWrapper(prop.getName(), prop.getType(),
+                                    prop.isRequired(), prop.isGen(),
                                     prop.getMinimum(), prop.getMaximum(), prop.getFormat())
                     );
-
-                    case "string" -> this.properties.add(
-                            new StringPropertyWrapper(prop.getName(), prop.getType(), prop.isRequired(), prop.gen(),
+                    case STRING -> this.properties.add(
+                            new StringPropertyWrapper(prop.getName(), prop.getType(),
+                                    prop.isRequired(), prop.isGen(),
                                     prop.getPattern())
                     );
-
-                    case "array" -> this.properties.add(
-                            new ArrayPropertyWrapper(prop.getName(), prop.getType(), prop.isRequired(), prop.gen(),
+                    case ARRAY -> this.properties.add(
+                            new ArrayPropertyWrapper(prop.getName(), prop.getType(),
+                                    prop.isRequired(), prop.isGen(),
                                     prop.getItemsType(), prop.getItemsFormat())
                     );
                 }
             }
         }
+    }
+
+    public List<PropertyWrapper> getProperties() {
+        return properties;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
