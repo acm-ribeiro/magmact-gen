@@ -6,10 +6,10 @@ public class APIResponse {
     public static final int DEFAULT = 999;
 
     private int responseCode;
-    private transient String description, contentSchemaType;
-    private ResponseSchema contentSchema;
-    private List<APILink> links;
-    private List<String> contentTypes;
+    private final transient String description, contentSchemaType;
+    private final ResponseSchema contentSchema;
+    private final List<APILink> links;
+    private final List<String> contentTypes;
 
     public APIResponse(String responseCode, String description, ResponseSchema contentSchema, String contentSchemaType, List<APILink> links, List<String> contentTypes) {
         try {

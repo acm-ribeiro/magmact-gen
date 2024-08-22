@@ -2,9 +2,18 @@ package oas_custom_parser.domain;
 
 public class APIProperty {
 
-	private String name, type, pattern, format, itemsType, itemsFormat, itemsPattern, ref;
-	private int minimum, maximum;
-	private boolean isCollection, required, gen;
+	private final String name;
+	private final String type;
+	private final String format;
+	private final String itemsType;
+	private final String itemsFormat;
+	private final String itemsPattern;
+	private final String ref;
+	private String pattern;
+
+	private final int minimum, maximum;
+	private final boolean isCollection;
+	private final boolean required, gen;
 
 	public APIProperty(String name, String type, String pattern, String format, String itemsType,
 					   String itemsFormat, String itemsPattern, String ref, int minimum,
@@ -88,7 +97,7 @@ public class APIProperty {
 			return space + name + " {type: " + type + ", pattern: " + pattern + ", required: " + required + "}";
 		else if(minimum != -999 && format.equals(""))
 			return space + name + " {type: " + type + ", pattern: " + pattern +  ", required: " + required + ", minimum: " + minimum + "}";
-		else if(minimum == -999 && !format.equals(""))
+		else if(minimum == -999)
 			return space + name + " {type: " + type + ", pattern: " + pattern + ", required: " + required + ", format: " + format + "}";
 		else
 			return space + name + " {type: " + type + ", pattern: " + pattern + ", required: " + required + ", format: " + format + ", minimum: " + minimum + "}";

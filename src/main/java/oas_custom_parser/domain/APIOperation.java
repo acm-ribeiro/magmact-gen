@@ -5,14 +5,17 @@ import java.util.List;
 
 public class APIOperation {
 
-	private String verb, operationId;
-	private URI uri;
-	private List<String> requires, ensures;
-	private List<URLParameter> pathParams, queryParams;
-	private Schema body;
-	private List<String> contentTypes;
-	private List<APIResponse> responses;
-	private List<String> tags;
+	public static final String PATH_PARAM = "path";
+	public static final String QUERY_PARAM = "query";
+
+	private final String verb, operationId;
+	private final URI uri;
+	private final List<String> requires, ensures;
+	private final List<URLParameter> pathParams, queryParams;
+	private final Schema body;
+	private final List<String> contentTypes;
+	private final List<APIResponse> responses;
+	private final List<String> tags;
 
 	public APIOperation(String url, String verb, String operationId, Schema body, List<URLParameter> params,
 						List<APIResponse> responses, List<String> contentTypes, List<String> tags) {
@@ -32,8 +35,8 @@ public class APIOperation {
 		if (params != null)
 			for (URLParameter p : params)
 				switch (p.getIn().toLowerCase()) {
-					case "path" -> pathParams.add(p);
-					case "query" -> queryParams.add(p);
+					case PATH_PARAM  -> pathParams.add(p);
+					case QUERY_PARAM -> queryParams.add(p);
 				}
 	}
 

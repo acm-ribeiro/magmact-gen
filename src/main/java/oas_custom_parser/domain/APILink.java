@@ -4,8 +4,8 @@ import java.util.Map;
 
 public class APILink {
 
-    private String name;
-    private String operationId;
+    private final String name;
+    private final String operationId;
     private Map<String, String> parameters; // key: parameter name; value: parameter expression
 
     public APILink(String name, String operationId, Map<String, String> parameters) {

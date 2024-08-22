@@ -109,7 +109,7 @@ public class MagmaCtGen {
             }
 
             // All the resources this operation depends on remain unchanged
-            for(String getter : getters) {
+            for (String getter : getters) {
                 op.addPrecondition(response_code(null, null, getter, OK).toString());
                 op.addPostcondition(response_code(null, null, getter, OK).toString());
             }
@@ -165,7 +165,7 @@ public class MagmaCtGen {
     public static Formula response_code(@Nullable String resource, @Nullable String id, @Nullable String uri, String code) {
         // Building the HTTP Request
         String url = uri != null? uri : "/" + resource + "/{" + id + "}";
-        HTTPRequest request = new HTTPRequest("GET", url);
+        HTTPRequest request = new HTTPRequest(GET, url);
 
         // Building the operation
         OperationParameter parameter = new OperationParameter(request, null);
