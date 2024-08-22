@@ -144,10 +144,7 @@ public class OASCustomParser {
                 try {
                     body = parseRequestBodySchema(op, schemas);
                     responses = parseOperationResponses(op, schemas);
-
-                    operations.put(operationId,
-                            new APIOperation(url, httpMethod, operationId, body, parameters,
-                            responses, contentTypes, op.getTags()));
+                    operations.put(operationId, new APIOperation(url, httpMethod, operationId, body, parameters, responses, contentTypes, op.getTags()));
                 } catch (NotJSONContentType e) {
                     System.out.println(e.getMessage());
                 }
@@ -231,6 +228,7 @@ public class OASCustomParser {
                     name = p.getName();
                     type = s.getType();
                     gen = schemaNode.get(GEN) != null && schemaNode.get(GEN).asBoolean();
+                    in = p.getIn();
 
                     if (type != null) {
                         minimum = type.equals(INTEGER) && s.getMinimum() != null ? (int) s.getMinimum() : NO_MIN;

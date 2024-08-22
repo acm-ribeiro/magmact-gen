@@ -33,11 +33,12 @@ public class APIOperation {
 		queryParams = new ArrayList<>();
 
 		if (params != null)
-			for (URLParameter p : params)
+			for (URLParameter p : params) {
 				switch (p.getIn().toLowerCase()) {
-					case PATH_PARAM  -> pathParams.add(p);
+					case PATH_PARAM -> pathParams.add(p);
 					case QUERY_PARAM -> queryParams.add(p);
 				}
+			}
 	}
 
 	public URI getUri() {
