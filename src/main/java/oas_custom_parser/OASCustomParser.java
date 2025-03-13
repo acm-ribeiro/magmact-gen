@@ -24,6 +24,7 @@ public class OASCustomParser {
 
     // custom properties
     public static final String GEN = "x-gen";
+    public static final String REFERS_TO = "x-refersTo";
 
     // types
     public static final String TYPE = "type";
@@ -245,7 +246,8 @@ public class OASCustomParser {
                     }
 
                     URLSchema.add(new APIProperty(name, type, NO_VAL, format, itemsType, NO_VAL,
-                            null, null, minimum, maximum, isCollection, required, gen));
+                            null, null, minimum, maximum, isCollection, required, gen,
+                            ""));
                 }
 
                 URLParameter urlParam = new URLParameter(in, name, p.isRequired(), URLSchema);
@@ -368,7 +370,7 @@ public class OASCustomParser {
             System.err.printf(NO_PROPERTIES, schemaName);
         else {
             List<String> requiredFields = s.hasRequiredFields() ? s.getRequiredFields() : null;
-            String name, type, refName;
+            String name, type, refName, refersTo = NO_VAL;
             String pattern = NO_VAL, itemsType = NO_VAL, itemsFormat = NO_VAL;
             String ref = NO_VAL, itemsPattern = NO_VAL, format = NO_VAL;
             int minimum = NO_MIN, maximum = NO_MAX;
@@ -401,7 +403,8 @@ public class OASCustomParser {
                             schemaNode.get(PATTERN).toString().replace("\"", NO_VAL)
                             : null;
                     gen = schemaNode.get(GEN) != null && schemaNode.get(GEN).asBoolean();
-                    ref = NO_VAL;
+                    refersTo = schemaNode.get(REFERS_TO) != null?
+                            schemaNode.get(REFERS_TO).asText() : NO_VAL;
                 } else {
                     // The property has a referenced schema
                     ref = propertiesEntry.getValue().getRef().replace(COMPONENTS_PATH, NO_VAL);
@@ -410,7 +413,8 @@ public class OASCustomParser {
                 }
 
                 properties.add(new APIProperty(name, type, pattern, format, itemsType, itemsFormat,
-                        itemsPattern, ref, minimum, maximum, isCollection, required, gen));
+                        itemsPattern, ref, minimum, maximum, isCollection, required, gen,
+                        refersTo));
             }
         }
 
@@ -425,42 +429,48 @@ public class OASCustomParser {
         String format = s.getFormat() != null ? s.getFormat() : NO_VAL;
         JsonNode node = s.toNode();
         boolean gen = node.get(GEN) != null && node.get(GEN).asBoolean();
+        String refersTo = node.get(REFERS_TO) != null ? node.get(REFERS_TO).asText() : NO_VAL;
 
         APIProperty property = new APIProperty(name, s.getType(), NO_VAL, format, NO_VAL, NO_VAL,
-                NO_VAL, NO_VAL, minimum, maximum, false, true, gen);
+                NO_VAL, NO_VAL, minimum, maximum, false, true, gen, refersTo);
         properties.add(property);
 
         return new Schema(s.getType(), name, properties);
     }
 
-    private static Schema parseStringSchema(String name, org.openapi4j.parser.model.v3.Schema s) {
+    private static Schema parseStringSchema(String name, org.openapi4j.parser.model.v3.Schema s) throws EncodeException {
         List<APIProperty> properties = new ArrayList<>();
         String pattern = s.getPattern() != null ? s.getPattern() : NO_VAL;
+        JsonNode node = s.toNode();
+        String refersTo = node.get(REFERS_TO) != null ? node.get(REFERS_TO).asText() : NO_VAL;
 
         APIProperty property = new APIProperty(name, s.getType(), pattern, NO_VAL,
                 NO_VAL, NO_VAL, null, NO_VAL, NO_MIN, NO_MAX,
-                false, true, false);
+                false, true, false, refersTo);
         properties.add(property);
 
         return new Schema(s.getType(), name, properties);
     }
 
-    private static Schema parseBooleanSchema(String name, org.openapi4j.parser.model.v3.Schema s) {
+    private static Schema parseBooleanSchema(String name, org.openapi4j.parser.model.v3.Schema s) throws EncodeException {
         List<APIProperty> properties = new ArrayList<>();
+        JsonNode node = s.toNode();
+        String refersTo = node.get(REFERS_TO) != null ? node.get(REFERS_TO).asText() : NO_VAL;
 
         APIProperty property = new APIProperty(name, s.getType(), NO_VAL, NO_VAL, NO_VAL, NO_VAL,
-                NO_VAL, NO_VAL, NO_MIN, NO_MAX, false, true, false);
+                NO_VAL, NO_VAL, NO_MIN, NO_MAX, false, true, false, refersTo);
         properties.add(property);
 
         return new Schema(s.getType(), name, properties);
     }
 
-    private static Schema parseArraySchema(String name, org.openapi4j.parser.model.v3.Schema s) {
+    private static Schema parseArraySchema(String name, org.openapi4j.parser.model.v3.Schema s) throws EncodeException {
         List<APIProperty> properties = new ArrayList<>();
         String itemsType = s.getItemsSchema().getRef();
-
+        JsonNode node = s.toNode();
+        String refersTo = node.get(REFERS_TO) != null ? node.get(REFERS_TO).asText() : NO_VAL;
         APIProperty property = new APIProperty(name, s.getType(), NO_VAL, NO_VAL, itemsType,
-                NO_VAL, NO_VAL, NO_VAL, NO_MIN, NO_MAX, true, true, false);
+                NO_VAL, NO_VAL, NO_VAL, NO_MIN, NO_MAX, true, true, false, refersTo);
         properties.add(property);
 
         return new Schema(s.getType(), name, properties);

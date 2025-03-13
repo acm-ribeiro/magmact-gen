@@ -1,5 +1,7 @@
 package oas_custom_parser.domain;
 
+import java.util.Arrays;
+
 public class APIProperty {
 
 	private final String name;
@@ -9,6 +11,7 @@ public class APIProperty {
 	private final String itemsFormat;
 	private final String itemsPattern;
 	private final String ref;
+	private final String refersTo;
 	private String pattern;
 
 	private final int minimum, maximum;
@@ -17,7 +20,7 @@ public class APIProperty {
 
 	public APIProperty(String name, String type, String pattern, String format, String itemsType,
 					   String itemsFormat, String itemsPattern, String ref, int minimum,
-					   int maximum, boolean isCollection, boolean required, boolean gen) {
+					   int maximum, boolean isCollection, boolean required, boolean gen, String refersTo) {
 		this.name = name;
 		this.type = type;
 		this.pattern = pattern;
@@ -31,6 +34,17 @@ public class APIProperty {
 		this.required = required;
 		this.gen = gen;
 		this.ref = ref;
+		this.refersTo = refersTo;
+	}
+
+	public String getRefersTo() {
+		if(!refersTo.isEmpty()) {
+			String[] parts = refersTo.split("/");
+			String idProperty = parts[parts.length - 1];
+			String schemaName = parts[parts.length - 2];
+			return schemaName + "/" + idProperty;
+		} else
+			return refersTo;
 	}
 
 	public String getRef() {

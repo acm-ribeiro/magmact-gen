@@ -968,13 +968,15 @@
           "pid": {
             "pattern": "(1|2)[0-9]{8}",
             "type": "string",
-            "example": "100200300"
+            "example": "100200300",
+            "x-refersTo":"#components/schemas/Player/pid" 
           },
           "tid": {
             "minimum": 0,
             "type": "integer",
             "format": "int64",
-            "example": 2
+            "example": 2,
+            "x-refersTo":"#components/schemas/Tournament/tid" 
           }
         }
       }

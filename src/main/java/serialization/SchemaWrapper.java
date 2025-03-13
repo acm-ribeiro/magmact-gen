@@ -5,6 +5,7 @@ import oas_custom_parser.domain.APIProperty;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class SchemaWrapper extends RequestBodySchema {
 
     private static final String INTEGER = "integer";
@@ -22,23 +23,23 @@ public class SchemaWrapper extends RequestBodySchema {
         for (APIProperty prop : properties) {
             if (prop.getType() == null)  // the schema is referenced
                 this.properties.add(new ObjectPropertyWrapper(prop.getName(), prop.getType(),
-                        prop.isRequired(), prop.isGen(), prop.getRef()));
+                        prop.isRequired(), prop.isGen(), prop.getRef(), prop.getRefersTo()));
             else {
                 switch (prop.getType().toLowerCase()) {
                     case INTEGER -> this.properties.add(
                             new IntegerPropertyWrapper(prop.getName(), prop.getType(),
-                                    prop.isRequired(), prop.isGen(),
-                                    prop.getMinimum(), prop.getMaximum(), prop.getFormat())
+                                    prop.isRequired(), prop.isGen(), prop.getMinimum(),
+                                    prop.getMaximum(), prop.getFormat(), prop.getRefersTo())
                     );
                     case STRING -> this.properties.add(
                             new StringPropertyWrapper(prop.getName(), prop.getType(),
-                                    prop.isRequired(), prop.isGen(),
-                                    prop.getPattern())
+                                    prop.isRequired(), prop.isGen(), prop.getPattern(),
+                                    prop.getRefersTo())
                     );
                     case ARRAY -> this.properties.add(
                             new ArrayPropertyWrapper(prop.getName(), prop.getType(),
-                                    prop.isRequired(), prop.isGen(),
-                                    prop.getItemsType(), prop.getItemsFormat())
+                                    prop.isRequired(), prop.isGen(), prop.getItemsType(),
+                                    prop.getItemsFormat(), prop.getRefersTo())
                     );
                 }
             }

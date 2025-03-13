@@ -4,17 +4,23 @@ public class PropertyWrapper {
 
     private String name;
     private final String type;
+    private final String refersTo;
     private boolean required, gen;
 
-    public PropertyWrapper(String name, String type, boolean required, boolean gen) {
+    public PropertyWrapper(String name, String type, boolean required, boolean gen, String refersTo) {
         this.name = name;
         this.type = type;
         this.required = required;
         this.gen = gen;
+        this.refersTo = refersTo;
     }
 
     public boolean isReferenced() {
         return name.contains("#");
+    }
+
+    public String getRefersTo() {
+        return refersTo;
     }
 
     public String getName() {
@@ -43,6 +49,7 @@ public class PropertyWrapper {
 
     @Override
     public String toString() {
-        return String.format("%s: {type: %s, required: %b, gen: %b}\n", name, type, required, gen);
+        return String.format("%s: {type: %s, required: %b, gen: %b, refersTo: %s}\n", name, type,
+                required, gen, refersTo);
     }
 }
